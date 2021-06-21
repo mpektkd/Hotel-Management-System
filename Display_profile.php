@@ -1,5 +1,21 @@
 <!DOCTYPE HTML>
 <html>
+<head>
+    <!-- Datatable CSS -->
+    <link href='https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css' rel='stylesheet' type='text/css'>
+
+    <!-- jQuery Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+
+    <!-- Datatable JS -->
+    <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.1.0/js/dataTables.dateTime.min.js"></script>
+    <script src="../../extensions/Editor/js/dataTables.editor.min.js"></script>
+
+</head>
 <body bgcolor="#5bc0de">
 <a href="profile_General.php" class="button">Back</a>
         <head>
@@ -13,6 +29,7 @@
 include("DBConnection.php");
 session_start();
 $id = $_REQUEST["id"];
+$ssn = $_GET["search1"];
 $qry = "SELECT 
             BraceletId,
             LastName,
@@ -30,7 +47,7 @@ $qry = "SELECT
                 a.idCustomer
             FROM Customer as a
             join SIN as b on b.idCustomer=a.idCustomer
-            where SINNumber = '319-23-3782'
+            where SINNumber LIKE '%" . $ssn ."%'
         )as e
         join ActiveCustomerLiveToRooms as c on c.idCustomer = e.idCustomer
         join Regions as d on d.idRegions=c.idRoom
@@ -73,84 +90,81 @@ $res = mysqli_query($con,$qry);
 
  ?>
 
+<!-- HTML -->
+<div >
+   <!-- Custom Filter -->
+   <table>
+     <tr>
+       <td>
+         <input type='number' id='searchByPrice' placeholder='Enter Price'>
+       </td>
+       <td>
+         <select id='searchByView'>
+           <option value=''>-- Select View --</option>
+           <option value='Street'>Street</option>
+           <option value='Sea'>Sea</option>
+           <option value='Castle'>Castle</option>
+         </select>
+       </td>
+     </tr>
+   </table>
 
-<form method="post" action="<?php echo $PHP_SELF; ?>"> 
-        <input type="radio" name = "view" value = "Street"> Street<br>
-        <input type="radio" name = "view" value = "Sea"> Sea<br>
-        <input type="radio" name = "view" value = "Castle"> Castle<br> 
-        <input type="submit" name="submit" value="Get Selected Values" />
+   <!-- Table -->
+   <table id='empTable' class='display dataTable'>
+     <thead>
+       <tr>
+         <th>Room</th>
+         <th>Number of Beds</th>
+         <th>View</th>
+         <th>Price Per Day</th>
+         <th>Floor</th>
+       </tr>
+     </thead>
 
-            <?php  
-
-                if (isset($_POST['submit']) && isset($_POST['view'])) 
-                {
-                    
-                    $view = $_POST['view'];  
-                    echo $view;
-                
-                }
-
-                $qry = "SELECT * FROM Room as a
-                JOIN Regions as b on b.idRegions=a.idRoom
-                where View = $view;";
-            
-                $rooms =  mysqli_query($con,$qry);
-                
-            ?>
-           Rooms List :  
-            <select name='rooms'>  
-            <option value="">--- Select ---</option>  
-            <?php  
-            
-                while($row=mysqli_fetch_assoc($rooms))
-                {  
-            ?>  
-                    <option value="<?php echo $row['idRoom']; ?>">"<?php echo $row['Description_Place']; ?>"</option>  
-            <?php 
-            }  
-            ?>  
-            </select>  
-            <input type="submit" name="Submit" value="Select" />  
-
-</form>
-<style>
-    .filterDiv {
-    float: left;
-    background-color: #2196F3;
-    color: #ffffff;
-    width: 100px;
-    line-height: 100px;
-    text-align: center;
-    margin: 2px;
-    display: none;
-    }
-
-    .show {
-    display: block;
-    }
-
-    .container {
-    margin-top: 20px;
-    overflow: hidden;
-    }
-</style>
-
-<h2>Filter DIV Elements</h2>
-
-<div class="container">
-  <div class="filterDiv cars">BMW</div>
-  <div class="filterDiv colors fruits">Orange</div>
-  <div class="filterDiv cars">Volvo</div>
-  <div class="filterDiv colors">Red</div>
-  <div class="filterDiv cars animals">Mustang</div>
-  <div class="filterDiv colors">Blue</div>
-  <div class="filterDiv animals">Cat</div>
-  <div class="filterDiv animals">Dog</div>
-  <div class="filterDiv fruits">Melon</div>
-  <div class="filterDiv fruits animals">Kiwi</div>
-  <div class="filterDiv fruits">Banana</div>
-  <div class="filterDiv fruits">Lemon</div>
-  <div class="filterDiv animals">Cow</div>
+   </table>
 </div>
+
+<script>
+$(document).ready(function(){
+
+
+  var dataTable = $('#empTable').DataTable({
+    'processing': true,
+    'serverSide': true,
+    'serverMethod': 'post',
+    //'searching': false, // Remove default Search Control
+    'ajax': {
+       'url':'ajaxfile.php',
+       'data': function(data){
+          // Read values
+          var view = $('#searchByView').val();
+          var price = $('#searchByPrice').val();
+          
+          // Append to data
+          data.searchByView = view;
+          data.searchByPrice = price;
+       }
+    },
+    'columns': [
+       { data: 'Description_Place' }, 
+       { data: 'NumberOfBeds' },
+       { data: 'View' },
+       { data: 'ChargePerDay' },
+       { data: 'Floor' },
+    ]
+
+});
+
+
+  $('#searchByView').keyup(function(){
+    dataTable.draw();
+  });
+
+  $('#searchByPrice').change(function(){
+    dataTable.draw();
+  });
+});
+</script>
+
 </html>
 

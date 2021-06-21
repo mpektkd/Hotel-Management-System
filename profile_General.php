@@ -11,7 +11,7 @@
 <form action = "Display_profile.php" method="get">
 <br>
 <center style="color:white;">Customer SSN:
-<input type="text" name="search1" size="48">
+<input id='ssn' type="text" name="search1" size="48">
 </br>
 <br>
 <center style="color:white;">
@@ -24,7 +24,11 @@
 
 </form>
 
-
+<script> 
+     $('#ssn').change(function(){
+        $('#searchByView').val() = "'".$('#searchByView').val()."'";    
+  });
+</script>
 
 <?php
 
@@ -57,10 +61,9 @@ $result = mysqli_query($con,$sql);
                                 <td style="color:white;"><?php echo $row["Gender"]; ?></td>
                                 <td style="color:white;"><?php echo $row["Number"]; ?></td>
                                 <td style="color:white;"><?php echo $row["Email"]; ?></td>
-                                <td style="color:white;"><?php echo $row["SINNumber"]; ?></td>
+                                <?php echo "<td><a href=\"Display_profile.php?search1=" . $row['SINNumber'] . "\">" . $row['SINNumber'] . "</a>" . "</td>"; ?>
                                 <td style="color:white;"><?php echo $row["SINDocument"]; ?></td>
                                 <td style="color:white;"><?php echo $row["SINIssueAuthority"]; ?></td>
-                                
                         </tr>
                 <?php
                 }
