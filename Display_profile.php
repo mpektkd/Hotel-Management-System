@@ -166,5 +166,129 @@ $(document).ready(function(){
 });
 </script>
 
+<div>
+<a href="index.html" class="button">Back</a>
+<center><h2 style = "color:white;">Add Service Charge</h2></center>
+<form action = "Display_profile.php" method="get">
+<br>
+<center style="color:white;">
+
+<div class="container">
+
+    <div class="panel panel-default">
+
+      <div class="panel-heading">Select State and get bellow Related City</div>
+
+      <div class="panel-body">
+
+            <div class="form-group">
+
+                <label for="title">Select Product:</label>
+
+                <select name="product" class="form-control">
+
+                    <option value="">--- Select Product ---</option>
+
+
+                    <?php
+
+
+                        $sql = "SELECT * FROM mydb.ServiceMenu"; 
+
+                        $result = mysqli_query($con,$sql);
+
+                        while($row = mysqli_fetch_assoc($result)){
+
+                            echo "<option value='".$row['idServiceMenu']."'>".$row['Description']."</option>";
+
+                        }
+
+                    ?>
+
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="title">Select Region:</label>
+
+                <select name="region" class="form-control" style="width:350px">
+
+                </select>
+
+            </div>
+
+
+      </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+$( "select[name='product']" ).change(function () {
+
+    var productID = $(this).val();
+
+  console.log(productID);
+    if(productID) {
+
+
+        $.ajax({
+
+            url: "ajaxpro.php",
+
+            dataType: 'Json',
+
+            data: {'id':productID},
+
+            success: function(data) {
+
+                $('select[name="region"]').empty();
+                $.each(data, function(key, value) {
+
+                    $('select[name="region"]').append('<option value="'+ key +'">'+ value +'</option>');
+
+                });
+
+            }
+
+        });
+
+
+    }else{
+
+        $('select[name="region"]').empty();
+
+    }
+
+});
+
+</script>
+
+                  <input type='number' name='quantity' id='quantity' placeholder='Enter Quantity'>
+                  <input type='submit'  id='submitCharge' placeholder='Submit'>
+
+<script> 
+
+        
+
+</script>
+            </div>
+      </div>
+      </div>
+    </div>
+</div>
+</br>
+<br>
+<center style="color:white;">
+
+ </div>
+
 </html>
 
