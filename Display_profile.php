@@ -146,7 +146,10 @@ $(document).ready(function(){
        }
     },
     'columns': [
-       { data: 'Description_Place' }, 
+       { data: 'Description_Place',
+        "render": function(data, type, row, meta){
+          return'<a href="' + data + '">' + data + '</a>';
+          }}, 
        { data: 'NumberOfBeds' },
        { data: 'View' },
        { data: 'ChargePerDay' },
