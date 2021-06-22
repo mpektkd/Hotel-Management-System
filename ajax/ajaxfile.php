@@ -26,37 +26,75 @@ if($searchValue != ''){
    $searchQuery .= " and (Description_Place like '%".$searchValue."%') ";
 }
 
+## Fetch records
+$qry = "SELECT * FROM(
+   SELECT
+   t.Description_Place as Description_Place, 
+   t.NumberOfBeds as NumberOfBeds,
+   t.View as View,
+   t.ChargePerDay as ChargePerDay,
+   t.Floor as Floor
+
+   from
+   (
+   select 
+
+   a.idRoom,
+   Description_Place, 
+   NumberOfBeds,
+   View,
+   ChargePerDay,
+   Floor
+   
+      
+   from Room as a
+   join Regions as b on b.idRegions=a.idRoom
+   )as t
+   left join 
+   (
+
+   select 
+
+   a.idRoom,
+   Description_Place, 
+   NumberOfBeds,
+   View,
+   ChargePerDay,
+   Floor
+   
+      
+   from Room as a
+   join Regions as b on b.idRegions=a.idRoom
+   join ActiveCustomerLiveToRooms as c on c.idRoom=b.idRegions
+   where LeavingDatetime >= NOW()
+   )as q on q.idRoom=t.idRoom
+   where q.idRoom is Null and 1) as w
+   where 1 ";
+
 ## Total number of records without filtering
-$qry = "SELECT count(*) as allcount from Room";
-$sel = mysqli_query($con,$qry);
+$qry1 = "SELECT count(*) as allcount from (".$qry.")as r  
+                     where 1 ";
+
+$sel = mysqli_query($con,$qry1);
 $records = mysqli_fetch_assoc($sel);
 $totalRecords = $records['allcount'];
 
 ## Total number of records with filtering
-$qry = "SELECT count(*) as allcount from Room as a 
-        join Regions as b on b.idRegions=a.idRoom
+$qry2 = "SELECT count(*) as allcount from (".$qry .")as r
         where 1";
 
-$sel = mysqli_query($con,$qry . $searchQuery);
+$sel = mysqli_query($con,$qry2 . $searchQuery);
 $records = mysqli_fetch_assoc($sel);
 $totalRecordwithFilter = $records['allcount'];
 
-## Fetch records
-$qry = "SELECT Description_Place, 
-                NumberOfBeds,
-                View,
-                ChargePerDay,
-                Floor
-        from Room as a 
-        join Regions as b on b.idRegions=a.idRoom
-        where 1 ";
+
 $empQuery = $qry . $searchQuery." order by ".$columnName." ".$columnSortOrder." limit ".$row.",".$rowperpage;
 $empRecords = mysqli_query($con, $empQuery);
 $data = array();
 
 while ($row = mysqli_fetch_assoc($empRecords)) {
    $data[] = array(
-     "Description_Place"=>$row['Description_Place'],
+     "Description_Place"=> $row['Description_Place'],
      "NumberOfBeds"=>$row['NumberOfBeds'],
      "View"=>$row['View'],
      "ChargePerDay"=>$row['ChargePerDay'],
@@ -73,3 +111,5 @@ $response = array(
 );
 
 echo json_encode($response);
+
+

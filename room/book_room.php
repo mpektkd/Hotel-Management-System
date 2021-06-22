@@ -3,67 +3,38 @@
 require_once "../DBConnection.php";
  
 // Define variables and initialize with empty values
-$lastname = $firstname = $phone = "";
-$lastname_err = $firstname_err = $phone_err = "";
+$room = '';
+$idroom = "";
+$room_err = "";
  
 // Processing form data when form is submitted
-if(isset($_POST["id"]) && !empty($_POST["id"])){
+if(isset($_POST["room"]) && !empty($_POST["room"])){
     // Get hidden input value
-    $id = $_POST["id"];
-    
-    // Validate address address
-    $input_last = trim($_POST["lastname"]);
-    if(empty($input_last)){
-        $lastname_err = "Please enter an Last Name.";     
-    } else{
-        $lastname = $input_last;
-    }
+    $ssn = $_POST["ssn"];
+    $room = $_POST["room"];
 
-    // Validate name
-    $input_first = trim($_POST["firstname"]);
-    if(empty($input_first)){
-        $firstname_err = "Please enter a Name.";
-    } elseif(!filter_var($input_first, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-        $firstname_err = "Please enter a valid Name.";
-    } else{
-        $firstname = $input_first;
-    }
-     
-    // Validate salary
-    $input_phone = trim($_POST["phone"]);
-    if(empty($input_phone)){
-        $phone_err = "Please enter the phone.";     
-    } elseif(!filter_var($input_phone, FILTER_SANITIZE_NUMBER_INT)){
-        $input_phone = "Please enter a validate phone.";
-    } else{
-        $phone = $input_phone;
-    }
+    $sql1 = "SELECT a.idCustomer 
+            from Customer as a 
+            join SIN as b on b.idCustomer=a.idCustomer 
+                where SINNumber like '%" . $ssn. "%';";
+
+    $sql3 = "SELECT idRoom from Room as a 
+            join Regions as b on b.idRegions=a.idRoom 
+                where Description_Place like '%" . $room . "%';";
+            
+    $id = mysqli_fetch_array(mysqli_query($con, $sql1), MYSQLI_ASSOC)['idCustomer'];
+    $idroom = mysqli_fetch_array(mysqli_query($con, $sql3), MYSQLI_ASSOC)['idRoom'];
     
     // Check input errors before inserting in database
-    if(empty($name_err) && empty($address_err) && empty($salary_err)){
+    if(empty($room_err)){
         // Prepare an update statement
-        $sql = "CALL mydb.UpdateCustomer (?, ?, ?, ?);";
-         
-        if($stmt = mysqli_prepare($con, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "isss", $param_id, $param_first, $param_last, $param_phone);
-            
-            // Set parameters
-            $param_id = $id;
-            $param_first = $firstname;
-            $param_last = $lastname;
-            $param_phone = $phone;
-            
-            
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                // Records updated successfully. Redirect to landing page
-                header("location: ../index.html");
-                exit();
-            } else{
-                echo "Oops! Something went wrong. Please try again later.";
-            }
-        }
+        
+        $sql2 = "INSERT INTO mydb.ActiveCustomerLiveToRooms (idCustomer, idRoom, ArrivalDatetime)
+        values (" .$id. ", ".$idroom.", '" . date("Y-m-d H:i:s"). "');";
+
+        mysqli_query($con, $sql2);
+
+        header("location: ../customer/active_customer.php?ssn=" . $ssn);
          
         // Close statement
         mysqli_stmt_close($stmt);
@@ -76,8 +47,8 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     if(isset($_GET["ssn"]) && !empty(trim($_GET["ssn"]))){
         // Get URL parameter
         $ssn =  trim($_GET["ssn"]);
-
-    }
+        
+        }
 }
 ?>
 <!DOCTYPE html>
@@ -85,17 +56,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/datetime/1.1.0/js/dataTables.dateTime.min.js"></script>
-    <script src="../../extensions/Editor/js/dataTables.editor.min.js"></script> -->
     <!-- Datatable CSS -->
     <link href='https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css' rel='stylesheet' type='text/css'>
 
@@ -109,6 +70,8 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/datetime/1.1.0/js/dataTables.dateTime.min.js"></script>
     <script src="../../extensions/Editor/js/dataTables.editor.min.js"></script>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
     <style>
         #quant{
@@ -116,7 +79,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
             margin: 0;
         }
         .wrapper{
-            width: 1200px;
+            width: 400px;
             margin: 0 auto;
         }
         table tr td{
@@ -139,7 +102,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         /* The container <div> - needed to position the dropdown content */
         .dropdown {
         position: relative;
-        /* display: inline-block; */
+        display: inline-block;
         }
 
         /* Dropdown Content (Hidden by Default) */
@@ -172,6 +135,9 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         .dropdown:hover .dropbtn {
         background-color: #3e8e41;
         }
+        body {
+        text-align: center;
+        }  
     </style>
     <!-- <script>
         $(document).ready(function(){
@@ -180,6 +146,9 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     </script> -->
 </head>
 <body>
+    <div style = "position:absolute; left:80px; top:20px;" id="back">
+    <?php echo '<a href="../customer/active_customer.php?ssn='. $ssn . '" class="btn btn-secondary ml-2">Back</a>'?>
+    </div>
 <!-- HTML -->
 
 </div>
@@ -217,7 +186,26 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
 
    </table>
 </div>
-
+<div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="mt-5">Choose Room</h2>
+                    <p>Please edit the input values and submit to insert customer booking.</p>
+                    <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">
+                        <div class="form-group">
+                            <label>Room </label>
+                            <input type="text" name="room" class="form-control">
+                            <span class="invalid-feedback"><?php echo $room_err;?></span>
+                        </div>
+                        <input type="hidden" name="ssn" value="<?php echo $ssn; ?>"/>
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                        <?php echo '<a href="../customer/active_customer.php?ssn='. $ssn . '" class="btn btn-secondary ml-2">Cancel</a>'?>
+                    </form>
+                </div>
+            </div>        
+        </div>
+    </div>
 <script>
 $(document).ready(function(){
 
@@ -228,7 +216,7 @@ $(document).ready(function(){
     'serverMethod': 'post',
     //'searching': false, // Remove default Search Control
     'ajax': {
-       'url':'../ajaxfile.php',
+       'url':'../ajax/ajaxfile.php',
        'data': function(data){
           // Read values
           var view = $('#searchByView').val();
@@ -240,15 +228,11 @@ $(document).ready(function(){
        }
     },
     'columns': [
-       { data: 'Description_Place',
-        // "render": function(data, type, row, meta){
-        //   return'<a href="' + data + '">' + data + '</a>';
-        //   }
-        }, 
+       { data: 'Description_Place'}, 
        { data: 'NumberOfBeds' },
        { data: 'View' },
        { data: 'ChargePerDay' },
-       { data: 'Floor' },
+       { data: 'Floor' }
     ]
 
 });

@@ -77,6 +77,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </style>
 </head>
 <body>
+    <div>
+    <a href="view_customer.php" class="btn btn-secondary ml-2">Back</a>
+    </div>
     <div class="wrapper">
         <div class="container-fluid">
             <div class="row">

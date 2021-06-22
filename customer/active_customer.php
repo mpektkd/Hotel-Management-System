@@ -28,6 +28,9 @@
     </script>
 </head>
 <body>
+    <div>
+    <a href="view_customer.php" class="btn btn-secondary ml-2">Back</a>
+    </div>
     <div class="wrapper">
         <div class="container-fluid">
             <div class="row">
@@ -93,7 +96,7 @@
                                             echo '<a href="read_customer.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                             echo '<a href="update_customer.php?id='. $row['id'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                             echo '<a href="delete_customer.php?id='. $row['id'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
-                                            echo '<button class="editbtn">edit</button>';
+                                            echo '<a href="../subscriptions/subscription_info.php?bid='. $row[BraceletId] . '&ssn=' .$ssn . '" class="button">Subscritpions</a>';
                                         echo "</td>";
                                     echo "</tr>";
                                 }
