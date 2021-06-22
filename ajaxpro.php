@@ -1,6 +1,6 @@
 <?php
 
-    include("DBConnection.php");
+    include("../DBConnection.php");
     session_start();
 
    $sql = "SELECT * from ServiceMenu as a

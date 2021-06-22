@@ -1,5 +1,5 @@
 <?php
-include 'DBConnection.php';
+include '../DBConnection.php';
 
 ## Read value
 $draw = $_POST['draw'];

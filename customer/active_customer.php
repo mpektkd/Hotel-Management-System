@@ -20,10 +20,6 @@
         table tr td:last-child{
             width: 120px;
         }
-        #foo {
-        white-space:nowrap;
-        width: 100px;
-        }
     </style>
     <script>
         $(document).ready(function(){
@@ -38,50 +34,66 @@
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Customer Details</h2>
-                        <a href="create_customer.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Customer</a>
+                        <?php echo '<a href="../room/book_room.php?ssn=' . $_GET['ssn'] .'" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Book New Room</a>;'?>
                     </div>
                     <?php
                     // Include ../DBconnection file
                     require_once "../DBConnection.php";
-                    
+                    $ssn = $_GET['ssn'];
                     // Attempt select query execution
-                    $sql = "SELECT * FROM mydb.CustomerInfo";
+                    $sql = "SELECT 
+                                BraceletId,
+                                LastName,
+                                FirstName,
+                                SINNumber,
+                                ArrivalDatetime, 
+                                LeavingDatetime,
+                                TotalBill,
+                                Description_Place
+                                FROM 
+                                        (SELECT 
+                                                LastName,
+                                                FirstName,
+                                                SINNumber,
+                                                a.idCustomer
+                                        FROM Customer as a
+                                        join SIN as b on b.idCustomer=a.idCustomer
+                                        where SINNumber LIKE '%" . $ssn ."%'
+                                        )as e
+                                join ActiveCustomerLiveToRooms as c on c.idCustomer = e.idCustomer
+                                join Regions as d on d.idRegions=c.idRoom
+                                ;";
                     if($result = mysqli_query($con, $sql)){
                         if(mysqli_num_rows($result) > 0){
                             echo '<table class="table table-bordered table-striped">';
                                 echo "<thead>";
                                     echo "<tr>";
-                                        echo "<th>LastName</th>";
-                                        echo "<th>FirstName</th>";
-                                        echo "<th>BirthDate</th>";
-                                        echo "<th>Gender</th>";
-                                        echo "<th>Number</th>";
-                                        echo "<th>Email</th>";
+                                        echo "<th>BraceletId</th>";
+                                        echo "<th>Lastname</th>";
+                                        echo "<th>Firstname</th>";
                                         echo "<th>SSN</th>";
-                                        echo "<th>SSNDocument</th>";
-                                        echo "<th>SSNIssueAuthority</th>";
+                                        echo "<th>ArrivalDatetime</th>";
+                                        echo "<th>LeavingDatetime</th>";
+                                        echo "<th>Bill</th>";
+                                        echo "<th>Place</th>";
                                     echo "</tr>";
                                 echo "</thead>";
                                 echo "<tbody>";
                                 while($row = mysqli_fetch_array($result)){
                                     echo "<tr>";
+                                        echo "<td>" . $row['BraceletId'] . "</td>";
                                         echo "<td>" . $row['LastName'] . "</td>";
                                         echo "<td>" . $row['FirstName'] . "</td>";
-                                        echo "<td>" . $row['BirthDate'] . "</td>";
-                                        echo "<td>" . $row['Gender'] . "</td>";
-                                        echo "<td>" . $row['Number'] . "</td>";
-                                        echo "<td>" . $row['Email'] . "</td>";
-                                        echo "<td><a href=\"active_customer.php?ssn=" . $row['SINNumber'] . "\">" . $row['SINNumber'] . "</a>" . "</td>";
-                                        echo "<td>" . $row['SINDocument'] . "</td>";
-                                        echo "<td>" . $row['SINIssueAuthority'] . "</td>";
-                                        echo '<td id="foo">';
+                                        echo "<td>" . $row['SINNumber'] . "</td>";
+                                        echo "<td>" . $row['ArrivalDatetime'] . "</td>";
+                                        echo "<td>" . $row['LeavingDatetime'] . "</td>";
+                                        echo "<td>" . $row['TotalBill'] . "</td>";
+                                        echo "<td>" . $row['Description_Place'] . "</td>";
+                                        echo "<td>";
                                             echo '<a href="read_customer.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                             echo '<a href="update_customer.php?id='. $row['id'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                             echo '<a href="delete_customer.php?id='. $row['id'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
-                                            
-                                        echo "</td>";
-                                        echo "<td>";
-                                        echo '<button id="foo" class="editbtn">See Info</button>';
+                                            echo '<button class="editbtn">edit</button>';
                                         echo "</td>";
                                     echo "</tr>";
                                 }

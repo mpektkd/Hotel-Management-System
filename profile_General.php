@@ -61,7 +61,7 @@ $result = mysqli_query($con,$sql);
                                 <td style="color:white;"><?php echo $row["Gender"]; ?></td>
                                 <td style="color:white;"><?php echo $row["Number"]; ?></td>
                                 <td style="color:white;"><?php echo $row["Email"]; ?></td>
-                                <?php echo "<td><a href=\"Display_profile.php?search1=" . $row['SINNumber'] . "\">" . $row['SINNumber'] . "</a>" . "</td>"; ?>
+                                <?php echo "<td><a href=\"customer\active_customer.php?search1=" . $row['SINNumber'] . "\">" . $row['SINNumber'] . "</a>" . "</td>"; ?>
                                 <td style="color:white;"><?php echo $row["SINDocument"]; ?></td>
                                 <td style="color:white;"><?php echo $row["SINIssueAuthority"]; ?></td>
                         </tr>
