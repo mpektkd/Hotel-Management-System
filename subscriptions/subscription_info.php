@@ -1,65 +1,34 @@
 <?php 
 
 // Include config file
-require_once "../DBConnection.php";
- 
-// Define variables and initialize with empty values
-$lastname = $firstname = $phone = "";
-$lastname_err = $firstname_err = $phone_err = "";
- 
-// Processing form data when form is submitted
-if(isset($_POST["id"]) && !empty($_POST["id"])){
-    // Get hidden input value
-    $id = $_POST["id"];
-    
-    // Validate address address
-    $input_last = trim($_POST["lastname"]);
-    if(empty($input_last)){
-        $lastname_err = "Please enter an Last Name.";     
-    } else{
-        $lastname = $input_last;
-    }
+include("../DBConnection.php");
 
-    // Validate name
-    $input_first = trim($_POST["firstname"]);
-    if(empty($input_first)){
-        $firstname_err = "Please enter a Name.";
-    } elseif(!filter_var($input_first, FILTER_VALIDATE_REGEXP, array("options"=>array("regexp"=>"/^[a-zA-Z\s]+$/")))){
-        $firstname_err = "Please enter a valid Name.";
-    } else{
-        $firstname = $input_first;
-    }
-     
-    // Validate salary
-    $input_phone = trim($_POST["phone"]);
-    if(empty($input_phone)){
-        $phone_err = "Please enter the phone.";     
-    } elseif(!filter_var($input_phone, FILTER_SANITIZE_NUMBER_INT)){
-        $input_phone = "Please enter a validate phone.";
-    } else{
-        $phone = $input_phone;
-    }
+// Processing form data when form is submitted
+if(isset($_POST["sid"]) && !empty($_POST["sid"])){
+    // Get hidden input value
+    $sid = $_POST["sid"];
+    $bid = $_POST["bid"];
+    $ssn = $_POST["ssn"];
     
+    echo $sid;
+    echo $bid;
     // Check input errors before inserting in database
     if(empty($name_err) && empty($address_err) && empty($salary_err)){
         // Prepare an update statement
-        $sql = "CALL mydb.UpdateCustomer (?, ?, ?, ?);";
+        $sql = "INSERT into SubscriptionToServices (BraceletId, idServices) values (?, ?);";
          
         if($stmt = mysqli_prepare($con, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "isss", $param_id, $param_first, $param_last, $param_phone);
+            mysqli_stmt_bind_param($stmt, "ii", $param_bid, $param_sid);
             
             // Set parameters
-            $param_id = $id;
-            $param_first = $firstname;
-            $param_last = $lastname;
-            $param_phone = $phone;
-            
-            
+            $param_bid = $bid;
+            $param_sid = $sid;
+
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
                 // Records updated successfully. Redirect to landing page
-                header("location: ../index.html");
+                header("location: subscription_info.php?bid=" . $bid . "&ssn=" .$ssn );
                 exit();
             } else{
                 echo "Oops! Something went wrong. Please try again later.";
@@ -79,6 +48,12 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
         $bid =  trim($_GET["bid"]);
         $ssn = trim($_GET['ssn']);
         // Prepare a select statement
+
+        $qry1 = "SELECT *
+                from SubscribedServices as b
+                join Services as c on c.idServices=b.idSubscribed"; 
+
+        $res = mysqli_query($con, $qry1);
         $sql = "SELECT 
                     distinct
                     idSubscriptionToServices,
@@ -134,6 +109,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
     <style>
         .wrapper{
             width: 1200px;
@@ -213,8 +189,7 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
                         echo "Oops! Something went wrong. Please try again later.";
                     }
  
-                    // Close connection
-                    mysqli_close($con);
+
                     ?>
                 </div>
             </div>        
@@ -222,20 +197,24 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     </div>
     <div class="container">
     <div class="panel panel-default">
-      <div class="panel-heading">Select State and get bellow Related City</div>
+      <div class="panel-heading">Select Service and Submit</div>
       <div class="panel-body">
+      <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">      
             <div class="form-group">
-                <label for="title">Select One of Subscription Services</label>
-                <select name="state" class="form-control">
+                <label class="form-group" for="title">Select One of Subscription Services</label>    
+                <select name="sid" class="form-control">
                     <option value="">--- Select Service ---</option>
 
 
                     <?php
-                        $sql = "SELECT * FROM demo_state"; 
-                        $result = mysqli_query($con, $sql);
-                        while($row = mysqli_fetch_array($result)){
-                            echo "<option value='".$row['id']."'>".$row['name']."</option>";
+
+                        while($row = mysqli_fetch_assoc($res)){
+                            echo $row['Description'];
+                            echo "<option value='".$row['idServices']."'>".$row['Description']."</option>";
+                            
                         }
+                        // Close connection
+                        mysqli_close($con);
                     ?>
 
 
@@ -244,11 +223,11 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
 
 
             <div class="form-group">
-                <label for="title">Select City:</label>
-                <select name="city" class="form-control" style="width:350px">
-                </select>
-            </div>
-
+                <input type="hidden" name="ssn" value="<?php echo $ssn; ?>"/>    
+                <input type="hidden" name="bid" value="<?php echo $bid; ?>"/>    
+                <input type="submit" class="btn btn-primary" value="Submit">    
+            </div>  
+        </form>
 
       </div>
     </div>
