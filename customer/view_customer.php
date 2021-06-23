@@ -33,6 +33,9 @@
     </script>
 </head>
 <body>
+<div>
+    <a href="../index.html" class="btn btn-secondary ml-2">Back</a>
+    </div>
     <div class="wrapper">
         <div class="container-fluid">
             <div class="row">

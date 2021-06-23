@@ -277,11 +277,6 @@ $( "select[name='product']" ).change(function () {
                   <input type='number' name='quantity' id='quantity' placeholder='Enter Quantity'>
                   <input type='submit'  id='submitCharge' placeholder='Submit'>
 
-<script> 
-
-        
-
-</script>
             </div>
       </div>
       </div>
