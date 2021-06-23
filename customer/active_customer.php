@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
-                        <h2 class="pull-left">Customer Details</h2>
+                        <h2 class="pull-left">Customer Bookings</h2>
                         <?php echo '<a href="../room/book_room.php?ssn=' . $_GET['ssn'] .'" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Book New Room</a>;'?>
                     </div>
                     <?php

@@ -49,9 +49,15 @@ if(isset($_POST["sid"]) && !empty($_POST["sid"])){
         $ssn = trim($_GET['ssn']);
         // Prepare a select statement
 
-        $qry1 = "SELECT *
-                from SubscribedServices as b
-                join Services as c on c.idServices=b.idSubscribed"; 
+        $qry1 = "SELECT * from SubscribedServices as q 
+                join Services as w on w.idServices=q.idSubscribed
+                where idSubscribed not in (
+                select 
+                    idSubscribed
+                from Services as a
+                join SubscribedServices as b on b.idSubscribed=a.idServices
+                join SubscriptionToServices as c on c.idServices=b.idSubscribed
+                where BraceletId=". $bid . ")";
 
         $res = mysqli_query($con, $qry1);
         $sql = "SELECT 
@@ -173,9 +179,9 @@ if(isset($_POST["sid"]) && !empty($_POST["sid"])){
                                             echo '<a href="delete_subscription.php?id='. $row['idSubscriptionToServices'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
                                             
                                         echo "</td>";
-                                        echo "<td>";
-                                        echo '<button id="foo" class="editbtn">See Info</button>';
-                                        echo "</td>";
+                                        // echo "<td>";
+                                        // echo '<button id="foo" class="editbtn">See Info</button>';
+                                        // echo "</td>";
                                     echo "</tr>";
                                 }
                                 echo "</tbody>";                            

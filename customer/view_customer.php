@@ -10,11 +10,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
         .wrapper{
-            width: 1200px;
+            width: 1400px;
             margin: 0 auto;
         }
         table tr td{
             width: auto;
+            white-space:nowrap;
             margin: 0;
         }
         table tr td:last-child{
@@ -80,9 +81,9 @@
                                             echo '<a href="delete_customer.php?id='. $row['id'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
                                             
                                         echo "</td>";
-                                        echo "<td>";
-                                        echo '<button id="foo" class="editbtn">See Info</button>';
-                                        echo "</td>";
+                                        // echo "<td>";
+                                        // echo '<button id="foo" class="editbtn">See Info</button>';
+                                        // echo "</td>";
                                     echo "</tr>";
                                 }
                                 echo "</tbody>";                            
