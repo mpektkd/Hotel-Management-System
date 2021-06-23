@@ -189,7 +189,7 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
          <th>Description-Place</th>
          <th>Region Name</th>
          <th>Floor</th>
-         <th>Regions ID</th>
+         <th>Choose</th>
        </tr>
      </thead>
 
@@ -245,7 +245,7 @@ $(document).ready(function(){
        { data: 'Floor' },
        { data: 'id',
         "render": function(data, type, row, meta){
-          return'<a href="' + row['Service'] + '">' + data + '</a>';
+          return'<a href="view_visit_regions.php?rid="' + data + ' class="btn btn-secondary ml-2">Check Visits</a>';
           }}
     ]
 
