@@ -44,13 +44,11 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
     mysqli_close($con);
 } else{
     // Check existence of id parameter before processing further
-    // if(isset($_GET["ssn"]) && !empty(trim($_GET["ssn"]))){
-    //     // Get URL parameter
-    //     $ssn =  trim($_GET["ssn"]);
+    if(isset($_GET["ssn"]) && !empty(trim($_GET["ssn"]))){
+        // Get URL parameter
+        $ssn =  trim($_GET["ssn"]);
         
-    //     }
-    $Qry = "SELECT * from Services";
-    $Res = mysqli_query($con, $Qry);
+        }
 }
 ?>
 <!DOCTYPE html>
@@ -162,19 +160,14 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
          <input type='number' id='searchByPrice' placeholder='Enter Price'>
        </td>
        <td>
-       <select class="dropbtn" id='searchByService'>
+         <select class="dropbtn" id='searchByView'>
          <div class="dropdown-content">
-           <option value=''>-- Select Service --</option>
-           <option value='Drink at Bar'>Drink at Bar</option>
-           <option value='Food and Drink at Restaurant'>Food and Drink at Restaurant</option>
-           <option value='Hair and Body Care at Hair Salon'>Hair and Body Care at Hair Salon</option>
-           <option value='Rest at Sauna'>Rest at Sauna</option>
-           <option value='Training at Gym'>Training at Gym</option>
-           <option value='Use of Meeting Room'>Use of Meeting Room</option>
+           <option value=''>-- Select View --</option>
+           <option value='Street'>Street</option>
+           <option value='Sea'>Sea</option>
+           <option value='Castle'>Castle</option>
         </div>
          </select>
-                </select>
-            </div>
        </td>
      </tr>
    </table>
@@ -183,13 +176,11 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
    <table id='empTable' class='display dataTable'>
      <thead>
        <tr>
-         <th>Product</th>
-         <th>Service</th>
-         <th>Cost Per Unit</th>
-         <th>Description-Place</th>
-         <th>Region Name</th>
+         <th>Room</th>
+         <th>Number of Beds</th>
+         <th>View</th>
+         <th>Price Per Day</th>
          <th>Floor</th>
-         <th>Choose</th>
        </tr>
      </thead>
 
@@ -225,34 +216,29 @@ $(document).ready(function(){
     'serverMethod': 'post',
     //'searching': false, // Remove default Search Control
     'ajax': {
-       'url':'../ajax/ajaxservice.php',
+       'url':'../ajax/ajaxfile.php',
        'data': function(data){
           // Read values
-          var service = $('#searchByService').val();
+          var view = $('#searchByView').val();
           var price = $('#searchByPrice').val();
           
           // Append to data
-          data.searchByService = service;
+          data.searchByView = view;
           data.searchByPrice = price;
        }
     },
     'columns': [
-       { data: 'Product'}, 
-       { data: 'Service' },
-       { data: 'CostPerUnit' },
-       { data: 'Description_Place'},
-       { data: 'RegionName' },
-       { data: 'Floor' },
-       { data: 'id',
-        "render": function(data, type, row, meta){
-          return'<a href="view_visit_regions.php?rid=' + data + '" class="btn btn-secondary ml-2">Check Visits</a>';
-          }}
+       { data: 'Description_Place'}, 
+       { data: 'NumberOfBeds' },
+       { data: 'View' },
+       { data: 'ChargePerDay' },
+       { data: 'Floor' }
     ]
 
 });
 
 
-  $('#searchByService').keyup(function(){
+  $('#searchByView').keyup(function(){
     dataTable.draw();
   });
 
@@ -266,23 +252,3 @@ $(document).ready(function(){
 
 </body>
 </html>
-
-
-
-<!-- <div class="form-group">
-                <label class="form-group" for="title">Select One of Subscription Services</label>    
-                <select name="searchByService" class="dropbtn">
-                    <option value="">--- Select Service ---</option>
-
-                    <div class="dropdown-content">
-                    ?php
-
-                        while($row = mysqli_fetch_assoc($Res)){
-                            echo $row['Description'];
-                            echo "<option value='".$row['Description']."'>".$row['Description']."</option>";
-                            
-                        }
-
-                    ?>
-
-                </div> -->

@@ -72,14 +72,14 @@
                                         echo "<td>" . $row['Gender'] . "</td>";
                                         echo "<td>" . $row['Number'] . "</td>";
                                         echo "<td>" . $row['Email'] . "</td>";
-                                        echo "<td><a href=\"active_customer.php?ssn=" . $row['SINNumber'] . "\">" . $row['SINNumber'] . "</a>" . "</td>";
+                                        echo "<td>" . $row['SINNumber'] . "</td>";
                                         echo "<td>" . $row['SINDocument'] . "</td>";
                                         echo "<td>" . $row['SINIssueAuthority'] . "</td>";
                                         echo '<td id="foo">';
                                             echo '<a href="read_customer.php?id='. $row['id'] .'" class="mr-3" title="View Record" data-toggle="tooltip"><span class="fa fa-eye"></span></a>';
                                             echo '<a href="update_customer.php?id='. $row['id'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                             echo '<a href="delete_customer.php?id='. $row['id'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
-                                            
+                                            echo '<a href="../customer/active_customer.php?ssn=' . $row['SINNumber'] .'" class="btn btn-secondary ml-2">See Bookings</a>';    
                                         echo "</td>";
                                         // echo "<td>";
                                         // echo '<button id="foo" class="editbtn">See Info</button>';
