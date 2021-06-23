@@ -44,9 +44,9 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
     mysqli_close($con);
 } else{
     // Check existence of id parameter before processing further
-    if(isset($_GET["ssn"]) && !empty(trim($_GET["ssn"]))){
+    if(isset($_GET["rid"]) && !empty(trim($_GET["rid"]))){
         // Get URL parameter
-        $ssn =  trim($_GET["ssn"]);
+        $rid = $_GET['rid'];
         
         }
 }
@@ -70,6 +70,13 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/datetime/1.1.0/js/dataTables.dateTime.min.js"></script>
     <script src="../../extensions/Editor/js/dataTables.editor.min.js"></script>
+
+
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -153,34 +160,21 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
 
 </div>
 <div class="dropdown">
-   <!-- Custom Filter -->
-   <table>
-     <tr>
-       <td>
-         <input type='number' id='searchByPrice' placeholder='Enter Price'>
-       </td>
-       <td>
-         <select class="dropbtn" id='searchByView'>
-         <div class="dropdown-content">
-           <option value=''>-- Select View --</option>
-           <option value='Street'>Street</option>
-           <option value='Sea'>Sea</option>
-           <option value='Castle'>Castle</option>
-        </div>
-         </select>
-       </td>
-     </tr>
-   </table>
-
    <!-- Table -->
    <table id='empTable' class='display dataTable'>
      <thead>
        <tr>
-         <th>Room</th>
-         <th>Number of Beds</th>
-         <th>View</th>
-         <th>Price Per Day</th>
-         <th>Floor</th>
+       <th>NFC ID</th>
+       <th>LastName</th>
+       <th>FirstName</th>
+       <th>SSN</th>
+       <th>Gender</th>
+       <th>Age</th>
+       <th>Description-place</th>
+       <th>Region Name</th>
+       <th>Entry Datetime</th>
+       <th>Exit Datetime</th>
+       <th></th>
        </tr>
      </thead>
 
@@ -216,33 +210,45 @@ $(document).ready(function(){
     'serverMethod': 'post',
     //'searching': false, // Remove default Search Control
     'ajax': {
-       'url':'../ajax/ajaxfile.php',
+       'url':'../ajax/ajaxvisit.php',
        'data': function(data){
           // Read values
-          var view = $('#searchByView').val();
-          var price = $('#searchByPrice').val();
-          
+          var start = $('#searchByStart').val();
+          var end = $('#searchByEnd').val();
+          var rid = <?php echo $rid; ?>;
+          console.log("adkjansjkl");
           // Append to data
-          data.searchByView = view;
-          data.searchByPrice = price;
+          data.searchByStart = start;
+          data.searchByEnd = end;
+          data.rid = rid;
+          console.log(rid);
        }
     },
     'columns': [
-       { data: 'Description_Place'}, 
-       { data: 'NumberOfBeds' },
-       { data: 'View' },
-       { data: 'ChargePerDay' },
-       { data: 'Floor' }
+       { data: 'NFCID'}, 
+       { data: 'LastName'}, 
+       { data: 'FirstName'}, 
+       { data: 'SSN'}, 
+       { data: 'Gender'}, 
+       { data: 'Age' },
+       { data: 'Description_Place' },
+       { data: 'RegionName' },
+       { data: 'EntryDatetime' },
+       { data: 'ExitDatetime' },
+       { data: 'id',
+        "render": function(data, type, row, meta){
+          return'<a href="../customer/active_customer.php?ssn=' + row['SSN'] + '" class="btn btn-secondary ml-2">Check Profile</a>';
+          }}
     ]
 
 });
 
 
-  $('#searchByView').keyup(function(){
+$('#searchByStart').keyup(function(){
     dataTable.draw();
   });
 
-  $('#searchByPrice').change(function(){
+  $('#searchByEnd').keyup(function(){
     dataTable.draw();
   });
 });
