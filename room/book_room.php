@@ -279,7 +279,8 @@ $(document).ready(function(){
        { data: 'idRoom',
        "render":function(data, type, row, meta){
           
-          var ssn = <?php echo $ssn ?>;
+          var ssn = "<?php echo $ssn ?>";
+          console.log(ssn);
           var url = "<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])) ?>";
 
           return   '<form action="'+ url +'" method="post"><input type="hidden" name="rid" value="'+ data +'"/><input type="hidden" name="ssn" value="'+ ssn +'"/><input type="submit" class="btn btn-primary" value="Book"></form>';

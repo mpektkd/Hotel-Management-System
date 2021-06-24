@@ -287,6 +287,7 @@ if ($flag1 || $flag2 || $flag3){
 
                 // Close statement
                 mysqli_stmt_close($stmt);
+                
 
     }  else{
         // URL doesn't contain id parameter. Redirect to error page
@@ -305,10 +306,15 @@ if ($flag1 || $flag2 || $flag3){
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../DataTables/DataTables-1.10.25/css/jquery.dataTables.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script type="text/javascript" language="javascript" src="../DataTables/DataTables-1.10.25/js/jquery.dataTables.js"></script>
+		 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+     
     <style>
         .wrapper{
             width: 1200px;
@@ -347,7 +353,7 @@ if ($flag1 || $flag2 || $flag3){
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Subscription Details</h2>
-                        <a href="create_customer.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Customer</a>
+                        <?php echo '<a href="../customer/bracelet_action.php?bid=' . $bid . '&ssn=' .$ssn . '" class="btn btn-success pull-right"><i class="fa "></i>See Action</a>'?>
                     </div>
                     <?php
                     if($result1){
@@ -442,9 +448,9 @@ if ($flag1 || $flag2 || $flag3){
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
                         <h2 class="pull-left">Charges Details</h2>
-                        <a href="create_customer.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Customer</a>
                     </div>
                     <?php
+                    $pay = '';
                     if($result2){
                         if(mysqli_num_rows($result2) > 0){
                             echo '<table class="table table-bordered table-striped">';
@@ -472,16 +478,18 @@ if ($flag1 || $flag2 || $flag3){
                                         echo "<td>" . $row['Description_Place'] . "</td>";
                                         echo "<td>" . $row['RegionName'] . "</td>";
                                         echo "<td>" . $row['Datetime'] . "</td>";
-                                        echo "<td>" . $row['isPaid'] . "</td>";
+                                        echo "<td>" .  $row['isPaid'] . "</td>";
                                         echo '<td class="foo">';
                                             echo '<a href="update_charge.php?id='. $row['idServiceCharge'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                             echo '<a href="delete_charge.php?id='. $row['idServiceCharge'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
-                                            echo '<form action="'. htmlspecialchars(basename($_SERVER['REQUEST_URI'])) . '" method="post">
+                                            if ($row['isPaid'] == 0){
+                                                echo '<form action="'. htmlspecialchars(basename($_SERVER['REQUEST_URI'])) . '" method="post">
                                                     <input type="hidden" name="ssn" value="' . $ssn . '"/>    
                                                     <input type="hidden" name="bid" value="' . $bid . '"/>    
                                                     <input type="hidden" name="charge" value="' . $row['idServiceCharge'] . '">
                                                     <input type="submit" class="btn btn-primary" value="Pay">
                                                     </form>';
+                                            }
                                         echo "</td>";
                                     echo "</tr>";
                                 }
@@ -568,7 +576,82 @@ if ($flag1 || $flag2 || $flag3){
 
 </div>
 
+<div class="header"><h1>Visits for <?php echo $descr . " " .$regname ?></h1></div>
+		<div class="container">
+			<table id="empTable"  class="display dataTable table-bordered table-striped" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+          <th>Entry ID</th>
+          <th>Region From</th>
+          <th>Floor(From)</th>
+          <th>Region To</th>
+          <th>Floor(To)</th>
+          <th>See Passes</th>
+					</tr>
+				</thead>
+				<thead>
+					<tr>
+          <td><input type="text" id="1" class="employee-search-input" ></td>
+          <td><input type="text" id="2" class="employee-search-input" ></td>
+          <td><input type="text" id="3" class="employee-search-input" ></td>
+          <td><input type="text" id="4" class="employee-search-input" ></td>
+          <td><input type="text" id="5" class="employee-search-input" ></td>
+					</tr>
+				<!-- </thead> -->
+			</table>
+		</div>
 
+
+    <script>
+			$(document).ready(function() {
+			
+        var dataTable = $('#empTable').DataTable({
+        'processing': true,
+        'serverSide': true,
+        'serverMethod': 'post',
+        //'searching': false, // Remove default Search Control
+        'ajax': {
+          'url':'../ajax/ajaxapproved.php',
+          'data': function(data){
+              
+              // Read values
+              var bid = "<?php echo $bid; ?>";
+              
+              // Append to data
+              data.bid = bid;
+              console.log(bid);
+            }
+          },
+          'columns': [
+            { data: 'EntryID'}, 
+            { data: 'RegionFrom'}, 
+            { data: 'FloorFrom'}, 
+            { data: 'RegionTo'}, 
+            { data: 'FloorTo'}, 
+            { data: 'idApprovedEntries',
+              "render": function(data, type, row, meta){
+                var ssn = "<?php echo $ssn ?>";
+                var bid = "<?php echo $bid ?>";
+                return'<a href="../tracking/track_covid.php?ssn=' + ssn + '&bid=' + bid + '&apid=' + data + '" class="btn btn-secondary ml-2">See Info</a>';
+                }}
+          ]
+
+});
+				
+        // $("#employee-grid_filter").css("display","none");  // hiding global search box
+        
+        $('.employee-search-input').on( 'keyup click change', function () {   
+            var i =$(this).attr('id');  // getting column index
+            var v =$(this).val();  // getting search input value
+            console.log(v);
+            dataTable.columns(i).search(v).draw();
+        } );
+		
+			} );
+
+
+
+		</script>
 <script>
 
  $('#date').on(' change keyup', function(){
