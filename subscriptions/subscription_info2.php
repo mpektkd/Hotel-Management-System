@@ -5,6 +5,7 @@ include("../DBConnection.php");
 
 $flag1 = 0;
 $flag2 = 0;
+$flag3 = 0;
 // Processing form data when form is submitted
 if(isset($_POST["sid"]) && !empty($_POST["sid"])){
 
@@ -37,7 +38,6 @@ if ($flag1 || $flag2 || $flag3){
         echo $sid;
         echo $bid;
         // Check input errors before inserting in database
-        if(empty($name_err) && empty($address_err) && empty($salary_err)){
             // Prepare an update statement
             $sql = "INSERT into SubscriptionToServices (BraceletId, idServices) values (?, ?);";
             
@@ -63,7 +63,6 @@ if ($flag1 || $flag2 || $flag3){
             
             // Close statement
             mysqli_stmt_close($stmt);
-        }
     }
 
 
@@ -600,7 +599,6 @@ if ($flag1 || $flag2 || $flag3){
 				<!-- </thead> -->
 			</table>
 		</div>
-
 
     <script>
 			$(document).ready(function() {
