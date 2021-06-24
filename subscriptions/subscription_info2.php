@@ -21,7 +21,13 @@ if(
     $flag2 = 1;
 }
 
-if ($flag1 || $flag2){
+if (
+    isset($_POST["charge"]) && !empty($_POST["charge"]) 
+    ){
+        $flag3 = 1;
+    }
+
+if ($flag1 || $flag2 || $flag3){
     if ($flag1 = 1){
         // Get hidden input value
         $sid = $_POST["sid"];
@@ -46,10 +52,10 @@ if ($flag1 || $flag2){
                 // Attempt to execute the prepared statement
                 if(mysqli_stmt_execute($stmt)){
                     // Records updated successfully. Redirect to landing page
-                    if ($flag2 = 0){
+                    if ($flag2 = 0 && $flag3 = 0){
                         header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );  # -> subscritpion_info 
                     }
-                    exit();
+                    // exit();
                 } else{
                     echo "Oops! Something went wrong. Please try again later.";
                 }
@@ -65,14 +71,32 @@ if ($flag1 || $flag2){
 
         $product = $_POST["product"];
         $region = $_POST["region"];
-        $quantity = $_POST["quantity"];
         $bid = $_POST["bid"];
         $ssn = $_POST["ssn"];
 
+        //Get quantity
+        if(isset($_POST["quantity"]) && !empty($_POST["quantity"]) ){
+
+            $quantity = $_POST["quantity"];
+        }
+        else{ 
+        
+            $quantity = $_POST["quantity"]; 
+
+        }
+
+        //Validate quantity
+        if($quantity <= 0){
+
+            header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );     # -> subscritpion_info  
+            // echo '<script>alert("quant")</script>';              
+            echo $quantity;
+        }
         //Get Date
         if(isset($_POST["date"]) && !empty($_POST["date"]) ){
 
             $date = $_POST["date"];
+            echo $date;
         }
         else{ 
         
@@ -84,6 +108,8 @@ if ($flag1 || $flag2){
         if(!($date >= $arrival && $date <= $leaving)){
 
             header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );     # -> subscritpion_info                
+            // echo '<script>alert("Date")</script>';
+            echo $date;
         }
 
         //Get Payment
@@ -113,9 +139,12 @@ if ($flag1 || $flag2){
 
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
+                
+                if($flag3 = 0){
                 // Records updated successfully. Redirect to landing page
                     header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );# -> subscritpion_info 
-                exit();
+                }
+                // exit();
             } else{
                 echo "Oops! Something went wrong. Please try again later.";
             }
@@ -125,6 +154,34 @@ if ($flag1 || $flag2){
         mysqli_stmt_close($stmt);
     }
 
+    if($flag3 = 1){
+
+        $charge = $_POST['charge'];
+        // Prepare an update statement
+        $SQL = "UPDATE mydb.ServiceCharge 
+                SET isPaid = 1 where idServiceCharge = ?";
+        
+        if($stmt = mysqli_prepare($con, $SQL)){
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "i", $param_charge);
+            
+            // Set parameters
+            $param_charge = $charge;
+
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                
+                // Records updated successfully. Redirect to landing page
+                    header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );# -> subscritpion_info 
+                // exit();
+            } else{
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+        }
+        
+        // Close statement
+        mysqli_stmt_close($stmt);
+    }
 
 } else{
     // Check existence of id parameter before processing further
@@ -134,56 +191,6 @@ if ($flag1 || $flag2){
         $ssn = trim($_GET['ssn']);
         // Prepare a select statement
 
-        $QRY = "SELECT ArrivalDatetime, LeavingDatetime from
-                ActiveCustomerLiveToRooms where BraceletId=" . $bid . "";
-
-        $res = mysqli_query($con, $QRY);
-        $row = mysqli_fetch_array($res);
-
-        $arrival = $row['ArrivalDatetime'];
-        $leaving = $row['LeavingDatetime'];
-
-        $qry2 = "SELECT 
-	
-                    b.idServiceCharge as idServiceCharge,
-                    e.Description as Service,
-                    d.Description as Product,
-                    CostPerUnit,
-                    Quantity,
-                    CostAmount,
-                    Description_Place,
-                    RegionName,
-                    Datetime,
-                    isPaid
-                    
-                    
-                
-                from ActiveCustomerLiveToRooms as a
-                join ServiceCharge as b on b.BraceletId=a.BraceletId
-                join Regions as c on c.idRegions=b.idRegions
-                join ServiceMenu as d on d.idServiceMenu=b.idServiceMenu
-                join Services as e on e.idServices=d.idServices
-                where a.BraceletId=" . $bid;
-
-                if($stmt = mysqli_prepare($con, $sql)){
-                    // Bind variables to the prepared statement as parameters
-                    mysqli_stmt_bind_param($stmt, "i", $param_bid);
-
-                    // Set parameters
-                    $param_bid = $bid;
-                    
-                    // Attempt to execute the prepared statement
-                    if(mysqli_stmt_execute($stmt)){
-                        $result = mysqli_stmt_get_result($stmt);
-
-                    } else{
-                        echo "Oops! Something went wrong. Please try again later.";
-                    }
-                }
-
-                // Close statement
-                mysqli_stmt_close($stmt);
-                
         $qry1 = "SELECT * from SubscribedServices as q 
                 join Services as w on w.idServices=q.idSubscribed
                 where idSubscribed not in (
@@ -194,7 +201,7 @@ if ($flag1 || $flag2){
                 join SubscriptionToServices as c on c.idServices=b.idSubscribed
                 where BraceletId=". $bid . ")";
 
-        $res = mysqli_query($con, $qry1);
+        $res1 = mysqli_query($con, $qry1);
 
 
         $sql = "SELECT 
@@ -220,7 +227,7 @@ if ($flag1 || $flag2){
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
-                $result = mysqli_stmt_get_result($stmt);
+                $result1 = mysqli_stmt_get_result($stmt);
 
             } else{
                 echo "Oops! Something went wrong. Please try again later.";
@@ -229,6 +236,57 @@ if ($flag1 || $flag2){
         
         // Close statement
         mysqli_stmt_close($stmt);
+
+        //Charges Queries
+        $QRY = "SELECT ArrivalDatetime, LeavingDatetime from
+                ActiveCustomerLiveToRooms where BraceletId=" . $bid . "";
+
+        $res2 = mysqli_query($con, $QRY);
+        $row = mysqli_fetch_array($res2);
+
+        $arrival = $row['ArrivalDatetime'];
+        $leaving = $row['LeavingDatetime'];
+
+        $qry2 = "SELECT 
+	
+                    b.idServiceCharge as idServiceCharge,
+                    e.Description as Service,
+                    d.Description as Product,
+                    CostPerUnit,
+                    Quantity,
+                    CostAmount,
+                    Description_Place,
+                    RegionName,
+                    Datetime,
+                    isPaid
+                    
+                    
+                
+                from ActiveCustomerLiveToRooms as a
+                join ServiceCharge as b on b.BraceletId=a.BraceletId
+                join Regions as c on c.idRegions=b.idRegions
+                join ServiceMenu as d on d.idServiceMenu=b.idServiceMenu
+                join Services as e on e.idServices=d.idServices
+                where a.BraceletId=?";
+
+                if($stmt = mysqli_prepare($con, $qry2)){
+                    // Bind variables to the prepared statement as parameters
+                    mysqli_stmt_bind_param($stmt, "i", $param_bid);
+
+                    // Set parameters
+                    $param_bid = $bid;
+                    
+                    // Attempt to execute the prepared statement
+                    if(mysqli_stmt_execute($stmt)){
+                        $result2 = mysqli_stmt_get_result($stmt);
+
+                    } else{
+                        echo "Oops! Something went wrong. Please try again later.";
+                    }
+                }
+
+                // Close statement
+                mysqli_stmt_close($stmt);
 
     }  else{
         // URL doesn't contain id parameter. Redirect to error page
@@ -263,7 +321,7 @@ if ($flag1 || $flag2){
         table tr td:last-child{
             width: 120px;
         }
-        #foo {
+        .foo {
             white-space:nowrap;
             width: 100px;
         }
@@ -292,11 +350,8 @@ if ($flag1 || $flag2){
                         <a href="create_customer.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Customer</a>
                     </div>
                     <?php
-                    // Include ../DBconnection file
-                    require_once "../DBConnection.php";
-                    
-                    if($result){
-                        if(mysqli_num_rows($result) > 0){
+                    if($result1){
+                        if(mysqli_num_rows($result1) > 0){
                             echo '<table class="table table-bordered table-striped">';
                                 echo "<thead>";
                                     echo "<tr>";
@@ -307,7 +362,7 @@ if ($flag1 || $flag2){
                                     echo "</tr>";
                                 echo "</thead>";
                                 echo "<tbody>";
-                                while($row = mysqli_fetch_array($result)){
+                                while($row = mysqli_fetch_array($result1)){
                                     echo "<tr>";
                                         echo "<td>" . $row['SubscriptionDatetime'] . "</td>";
                                         echo "<td>" . $row['CostAmount'] . "</td>";
@@ -327,7 +382,7 @@ if ($flag1 || $flag2){
                                 echo "</tbody>";                            
                             echo "</table>";
                             // Free result set
-                            mysqli_free_result($result);
+                            mysqli_free_result($result1);
                         } else{
                             echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
                         }
@@ -354,7 +409,7 @@ if ($flag1 || $flag2){
 
                     <?php
 
-                        while($row = mysqli_fetch_assoc($res)){
+                        while($row = mysqli_fetch_assoc($res1)){
                             echo $row['Description'];
                             echo "<option value='".$row['idServices']."'>".$row['Description']."</option>";
                             
@@ -390,11 +445,8 @@ if ($flag1 || $flag2){
                         <a href="create_customer.php" class="btn btn-success pull-right"><i class="fa fa-plus"></i> Add New Customer</a>
                     </div>
                     <?php
-                    // Include ../DBconnection file
-                    require_once "../DBConnection.php";
-                    
-                    if($result){
-                        if(mysqli_num_rows($result) > 0){
+                    if($result2){
+                        if(mysqli_num_rows($result2) > 0){
                             echo '<table class="table table-bordered table-striped">';
                                 echo "<thead>";
                                     echo "<tr>";
@@ -410,27 +462,33 @@ if ($flag1 || $flag2){
                                     echo "</tr>";
                                 echo "</thead>";
                                 echo "<tbody>";
-                                while($row = mysqli_fetch_array($result)){
+                                while($row = mysqli_fetch_array($result2)){
                                     echo "<tr>";
                                         echo "<td>" . $row['Service'] . "</td>";
                                         echo "<td>" . $row['Product'] . "</td>";
                                         echo "<td>" . $row['CostPerUnit'] . "</td>";
                                         echo "<td>" . $row['Quantity'] . "</td>";
+                                        echo "<td>" . $row['CostAmount'] . "</td>";
                                         echo "<td>" . $row['Description_Place'] . "</td>";
                                         echo "<td>" . $row['RegionName'] . "</td>";
                                         echo "<td>" . $row['Datetime'] . "</td>";
-                                        echo "<td>" . $row['IsPaid'] . "</td>";
-                                        echo '<td id="foo">';
+                                        echo "<td>" . $row['isPaid'] . "</td>";
+                                        echo '<td class="foo">';
                                             echo '<a href="update_charge.php?id='. $row['idServiceCharge'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                             echo '<a href="delete_charge.php?id='. $row['idServiceCharge'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
-                                            
+                                            echo '<form action="'. htmlspecialchars(basename($_SERVER['REQUEST_URI'])) . '" method="post">
+                                                    <input type="hidden" name="ssn" value="' . $ssn . '"/>    
+                                                    <input type="hidden" name="bid" value="' . $bid . '"/>    
+                                                    <input type="hidden" name="charge" value="' . $row['idServiceCharge'] . '">
+                                                    <input type="submit" class="btn btn-primary" value="Pay">
+                                                    </form>';
                                         echo "</td>";
                                     echo "</tr>";
                                 }
                                 echo "</tbody>";                            
                             echo "</table>";
                             // Free result set
-                            mysqli_free_result($result);
+                            mysqli_free_result($result2);
                         } else{
                             echo '<div class="alert alert-danger"><em>No records were found.</em></div>';
                         }
@@ -501,7 +559,7 @@ if ($flag1 || $flag2){
             <input type='number' name='paid' placeholder='Is Paid'>
             <div class="date" >
             <label for="date">Valid Period <?php echo "( ". $arrival . " - " . $leaving . " )" ?>:</label>
-            <input type="datetime-local" class="date" name="date">
+            <input type="text" class="date" name="date">
             </div>
             <input type="submit" class="btn btn-primary" value="Submit">
       </div>
@@ -512,6 +570,12 @@ if ($flag1 || $flag2){
 
 
 <script>
+
+ $('#date').on(' change keyup', function(){
+    
+    var date = $('#date').val();
+    console.log(date);
+  });
 
 $( "select[name='product']" ).change(function () {
 

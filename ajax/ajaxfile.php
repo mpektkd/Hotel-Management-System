@@ -29,6 +29,7 @@ if($searchValue != ''){
 ## Fetch records
 $qry = "SELECT * FROM(
    SELECT
+   t.idRoom,
    t.Description_Place as Description_Place, 
    t.NumberOfBeds as NumberOfBeds,
    t.View as View,
@@ -98,7 +99,8 @@ while ($row = mysqli_fetch_assoc($empRecords)) {
      "NumberOfBeds"=>$row['NumberOfBeds'],
      "View"=>$row['View'],
      "ChargePerDay"=>$row['ChargePerDay'],
-     "Floor"=>$row['Floor']
+     "Floor"=>$row['Floor'],
+     "idRoom"=>$row['idRoom']
    );
 }
 

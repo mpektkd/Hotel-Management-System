@@ -149,7 +149,7 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
 </head>
 <body>
     <div style = "position:absolute; left:80px; top:20px;" id="back">
-    <?php echo '<a href="../customer/active_customer.php?ssn='. $ssn . '" class="btn btn-secondary ml-2">Back</a>'?>
+    <?php echo '<a href="../index.html" class="btn btn-secondary ml-2">Back</a>'?>
     </div>
 <!-- HTML -->
 
@@ -195,26 +195,7 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
 
    </table>
 </div>
-<div class="wrapper">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="mt-5">Choose Room</h2>
-                    <p>Please edit the input values and submit to insert customer booking.</p>
-                    <form action="<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])); ?>" method="post">
-                        <div class="form-group">
-                            <label>Room </label>
-                            <input type="text" name="room" class="form-control">
-                            <span class="invalid-feedback"><?php echo $room_err;?></span>
-                        </div>
-                        <input type="hidden" name="ssn" value="<?php echo $ssn; ?>"/>
-                        <input type="submit" class="btn btn-primary" value="Submit">
-                        <?php echo '<a href="../customer/active_customer.php?ssn='. $ssn . '" class="btn btn-secondary ml-2">Cancel</a>'?>
-                    </form>
-                </div>
-            </div>        
-        </div>
-    </div>
+
 <script>
 $(document).ready(function(){
 

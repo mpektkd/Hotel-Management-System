@@ -2,43 +2,81 @@
 // Include config file
 require_once "../DBConnection.php";
  
-// Define variables and initialize with empty values
-$room = '';
-$idroom = "";
-$room_err = "";
+// // Define variables and initialize with empty values
+// $room = '';
+// $idroom = "";
+// $room_err = "";
+ 
+// // Processing form data when form is submitted
+// if(isset($_POST["room"]) && !empty($_POST["room"])){
+//     // Get hidden input value
+//     $ssn = $_POST["ssn"];
+//     $room = $_POST["room"];
+
+//     $sql1 = "SELECT a.idCustomer 
+//             from Customer as a 
+//             join SIN as b on b.idCustomer=a.idCustomer 
+//                 where SINNumber like '%" . $ssn. "%';";
+
+//     $sql3 = "SELECT idRoom from Room as a 
+//             join Regions as b on b.idRegions=a.idRoom 
+//                 where Description_Place like '%" . $room . "%';";
+            
+//     $id = mysqli_fetch_array(mysqli_query($con, $sql1), MYSQLI_ASSOC)['idCustomer'];
+//     $idroom = mysqli_fetch_array(mysqli_query($con, $sql3), MYSQLI_ASSOC)['idRoom'];
+    
+//     // Check input errors before inserting in database
+//     if(empty($room_err)){
+//         // Prepare an update statement
+        
+//         $sql2 = "INSERT INTO mydb.ActiveCustomerLiveToRooms (idCustomer, idRoom, ArrivalDatetime)
+//         values (" .$id. ", ".$idroom.", '" . date("Y-m-d H:i:s"). "');";
+
+//         mysqli_query($con, $sql2);
+
+//         header("location: ../customer/active_customer.php?ssn=" . $ssn);
+         
+//         // Close statement
+//         mysqli_stmt_close($stmt);
+//     }
+    
+//     // Close connection
+//     mysqli_close($con);
+// } else{
+//     // Check existence of id parameter before processing further
+//     if(isset($_GET["ssn"]) && !empty(trim($_GET["ssn"]))){
+//         // Get URL parameter
+//         $ssn =  trim($_GET["ssn"]);
+        
+//         }
+// }
+
  
 // Processing form data when form is submitted
-if(isset($_POST["room"]) && !empty($_POST["room"])){
+if(isset($_POST["rid"]) && !empty($_POST["rid"])){
     // Get hidden input value
     $ssn = $_POST["ssn"];
-    $room = $_POST["room"];
+    $rid = $_POST["rid"];
 
     $sql1 = "SELECT a.idCustomer 
             from Customer as a 
             join SIN as b on b.idCustomer=a.idCustomer 
                 where SINNumber like '%" . $ssn. "%';";
 
-    $sql3 = "SELECT idRoom from Room as a 
-            join Regions as b on b.idRegions=a.idRoom 
-                where Description_Place like '%" . $room . "%';";
-            
     $id = mysqli_fetch_array(mysqli_query($con, $sql1), MYSQLI_ASSOC)['idCustomer'];
-    $idroom = mysqli_fetch_array(mysqli_query($con, $sql3), MYSQLI_ASSOC)['idRoom'];
     
     // Check input errors before inserting in database
-    if(empty($room_err)){
         // Prepare an update statement
         
-        $sql2 = "INSERT INTO mydb.ActiveCustomerLiveToRooms (idCustomer, idRoom, ArrivalDatetime)
-        values (" .$id. ", ".$idroom.", '" . date("Y-m-d H:i:s"). "');";
+      $sql2 = "INSERT INTO mydb.ActiveCustomerLiveToRooms (idCustomer, idRoom, ArrivalDatetime)
+      values (" .$id. ", ".$rid.", '" . date("Y-m-d H:i:s"). "');";
 
-        mysqli_query($con, $sql2);
+      mysqli_query($con, $sql2);
 
-        header("location: ../customer/active_customer.php?ssn=" . $ssn);
-         
-        // Close statement
-        mysqli_stmt_close($stmt);
-    }
+      header("location: ../customer/active_customer.php?ssn=" . $ssn);
+        
+      // Close statement
+      mysqli_stmt_close($stmt);
     
     // Close connection
     mysqli_close($con);
@@ -138,6 +176,10 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
         body {
         text-align: center;
         }  
+        form {
+        width: 75%;
+        margin: 0 auto;
+}
     </style>
     <!-- <script>
         $(document).ready(function(){
@@ -160,7 +202,7 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
          <input type='number' id='searchByPrice' placeholder='Enter Price'>
        </td>
        <td>
-         <select class="dropbtn" id='searchByView'>
+         <select class="form-data" id='searchByView'>
          <div class="dropdown-content">
            <option value=''>-- Select View --</option>
            <option value='Street'>Street</option>
@@ -173,7 +215,7 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
    </table>
 
    <!-- Table -->
-   <table id='empTable' class='display dataTable'>
+   <table id='empTable' class='display dataTable table-bordered table-striped'>
      <thead>
        <tr>
          <th>Room</th>
@@ -181,6 +223,7 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
          <th>View</th>
          <th>Price Per Day</th>
          <th>Floor</th>
+         <th></th>
        </tr>
      </thead>
 
@@ -232,13 +275,22 @@ $(document).ready(function(){
        { data: 'NumberOfBeds' },
        { data: 'View' },
        { data: 'ChargePerDay' },
-       { data: 'Floor' }
+       { data: 'Floor' },
+       { data: 'idRoom',
+       "render":function(data, type, row, meta){
+          
+          var ssn = <?php echo $ssn ?>;
+          var url = "<?php echo htmlspecialchars(basename($_SERVER['REQUEST_URI'])) ?>";
+
+          return   '<form action="'+ url +'" method="post"><input type="hidden" name="rid" value="'+ data +'"/><input type="hidden" name="ssn" value="'+ ssn +'"/><input type="submit" class="btn btn-primary" value="Book"></form>';
+
+       }}
     ]
 
 });
 
 
-  $('#searchByView').keyup(function(){
+  $('#searchByView').on('change ', function(){
     dataTable.draw();
   });
 
