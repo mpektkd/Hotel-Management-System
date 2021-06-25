@@ -13,25 +13,26 @@ $columnSortOrder = $_POST['order'][0]['dir']; // asc or desc
 ## Custom Field value
 $searchByStart = $_POST['searchByStart'];
 $searchByEnd = $_POST['searchByEnd'];
-$id = $_POST['id'];
+$cid = $_POST['cid'];
 
 // if($searchValue != ''){
 //    $searchQuery .= " and (BraceletId=".$searchValue.") ";
 // }
 
 $searchQuery = ' ';
-if($searchByStart != '' && ($searchByEnd != '')){
+if(($searchByStart) != '' && ($searchByEnd != '')){
     $searchQuery .= " and ( ArrivalDatetime between '".$searchByStart .
                       "' and '".$searchByEnd."' ) ";
  }
- if($searchByStart != '' && ($searchByEnd = '')){
+ if(($searchByStart) != '' && ($searchByEnd == '')){
     $searchQuery .= " and ( ArrivalDatetime >= '".$searchByStart."' ) ";
  }
- if($searchByStart = '' && ($searchByEnd != '')){
+ if(($searchByStart) == '' && ($searchByEnd != '')){
     $searchQuery .= " and ( ArrivalDatetime <= '".$searchByEnd."' ) ";
  }
 ## Fetch records
-if($id != ''){
+$qry = '';
+if($cid != ''){
 $qry = 'SELECT 
 		
             a.BraceletId as NFCID,
@@ -44,23 +45,9 @@ $qry = 'SELECT
         from ActiveCustomerLiveToRooms as a 
         join Room as b on b.idRoom=a.idRoom
         join Regions as c on c.idRegions=b.idRoom
-        where a.BraceletId=' . $id ;
+        where a.idCustomer=' . $cid ;
 }
-else{
-    $qry = 'SELECT 
-		
-            a.BraceletId as NFCID,
-            ArrivalDatetime,
-            LeavingDatetime,
-            concat(Description_Place, " ", Floor , "-Floor") as Room
 
-
-
-        from ActiveCustomerLiveToRooms as a 
-        join Room as b on b.idRoom=a.idRoom
-        join Regions as c on c.idRegions=b.idRoom';
-
-}
 ## Total number of records without filtering
 $qry1 = "SELECT count(*) as allcount from (".$qry.")as r";
 
@@ -90,7 +77,7 @@ while ($row = mysqli_fetch_assoc($empRecords)) {
      "ArrivalDatetime"=>$row['ArrivalDatetime'],
      "LeavingDatetime"=>$row['LeavingDatetime'],
      "Room"=>$row['Room'],
-     "id"=>$row['NFCID']
+     "bid"=>$row['NFCID']
    );
 }            
 

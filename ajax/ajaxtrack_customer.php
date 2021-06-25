@@ -104,7 +104,7 @@ while ($row = mysqli_fetch_assoc($empRecords)) {
      "Number"=>$row['Number'],
      "Email"=>$row['Email'],
      "SINNumber"=>$row['SINNumber'],
-     "id"=>$row['id']
+     "cid"=>$row['id']
    );
 }
 

@@ -33,6 +33,9 @@
         .employee-search-input2 {
             width: 100%;
         }
+        .employee-search-input4 {
+            width: 100%;
+        }
         .datepicker {
             float:left;width:30%;
         }
@@ -166,18 +169,73 @@
 			<table id="empTable3"  class="display dataTable table-bordered table-striped " cellspacing="0" width="30%">
 				<thead>
 					<tr>
-          <th>Datetime</th>
-          <th>Region From</th>
-          <th>Region To</th>
+          <th>Region</th>
+          <th>Entry Datetime</th>
+          <th>Exit Datetime</th>
+          <th></th>
 					</tr>
 				</thead>
                 </thead>
 				<thead>
                 <tr>
                 <td></td>
-                <td><input type="text" id="8" placeholder="Search Region From" class="employee-search-input3 dropdown-content" ></td>
-                <td><input type="text" id="9" placeholder="Search Region To" class="employee-search-input3 dropdown-content" ></td>
+                <td><input type="text" id="8" placeholder="Search Entry Datetime" class="employee-search-input3 dropdown-content" ></td>
+                <td><input type="text" id="9" placeholder="Search Exit Datetime" class="employee-search-input3 dropdown-content" ></td>
                 </tr>
+				</thead>
+			</table>
+		</div>
+
+    <div class="header"><h1>Visits for <?php echo $descr . " " .$regname ?></h1></div>
+<div class="container">
+               <!-- Custom Filter -->
+   <table>
+     <tr>
+       <td>
+         <input type='number' id='s3' placeholder='Enter Price'>
+       </td>
+       <td>
+         <select class="form-data" id='s4'>
+         <div class="dropdown-content">
+           <option value=''>-- Select View --</option>
+           <option value='20-40'>20-40</option>
+           <option value='40-60'>40-60</option>
+           <option value='60'>60+</option>
+        </div>
+         </select>
+       </td>
+     </tr>
+   </table>
+
+   <!-- Table -->
+			<table id="empTable4"  class="display dataTable table-bordered table-striped " cellspacing="0" width="30%">
+				<thead>
+					<tr>
+          <th>Last Name</th>
+          <th>First Name</th>
+          <th>Age</th>
+          <th>Gender</th>
+          <th>BirthDate</th>
+          <th>Number</th>
+          <th>SINNumber</th>
+          <th>Region</th>
+          <th>Entry Datetime</th>
+          <th>Exit Datetime</th>
+					</tr>
+				</thead>           
+				<thead>
+					<tr>
+          <td><input type="text" id="10" placeholder="Search by Last Name" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="11" placeholder="Search by First Name" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="12" placeholder="Search by >= Age" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="13" placeholder="Search by Gender" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="14" placeholder="Search by Number" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="15" placeholder="Search by Email" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="16" placeholder="Search by SSN" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="17" placeholder="Search by SSN" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="18" placeholder="Search by SSN" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="19" placeholder="Search by SSN" class="employee-search-input4 dropdown-content" ></td>
+					</tr>
 				</thead>
 			</table>
 		</div>
@@ -185,18 +243,27 @@
 <script>
     var cid;
     var bid;
+    var vid;
     var filter_nfc ;
     var track;
+    var cases;
     
     $(document).ready(function() {
         
         filter_nfc = function(button) {   
-            cid = $(button).val();
-            dataTable2.draw();
+          cid = $(button).val();
+          dataTable2.draw();
         };
+
         track = function(button) {   
-            bid = $(button).val();
-            dataTable3.draw();
+          bid = $(button).val();
+          dataTable3.draw();
+        };
+
+        cases = function(button){
+          vid = $(button).val();
+          console.log(vid);
+          dataTable4.draw();
         };
 
         var dataTable1 = $('#empTable1').DataTable({
@@ -221,11 +288,11 @@
             { data: 'Number'}, 
             { data: 'Email'},
             { data: 'SINNumber'}, 
-            { data: 'id',
+            { data: 'cid',
             "render":function(data, type, row, meta){
             return   '<button class="btn" value="' + data + '" onclick="filter_nfc(this)">Choose</button>';
 
-       }}
+            }}
           ]
 
         });
@@ -244,7 +311,7 @@
               // Append to data
               data.searchByStart = start;
               data.searchByEnd = end;
-              data.id = cid;
+              data.cid = cid;
             }
           },
           'columns': [
@@ -252,7 +319,7 @@
             { data: 'ArrivalDatetime'}, 
             { data: 'LeavingDatetime'}, 
             { data: 'Room'}, 
-            { data: 'id',
+            { data: 'bid',
             "render":function(data, type, row, meta){
             return   '<button class="btn" value="' + data + '" onclick="track(this)">Track</button>';
             }},
@@ -266,7 +333,7 @@
                 'serverMethod': 'post',
                 //'searching': false, // Remove default Search Control
                 'ajax': {
-                'url':'../ajax/ajaxtrack_passes.php',
+                'url':'../ajax/ajaxtrack_visits.php',
                 'data': function(data){
                     // Read values
                     var start = $('#start').val();
@@ -278,43 +345,76 @@
                     }
                 },
                 'columns': [
-                    { data: 'Datetime'}, 
-                    { data: 'RegionFrom'}, 
-                    { data: 'RegionTo'}, 
-            //         { data: 'id',
-            //         "render":function(data, type, row, meta){
-            //         return   '<button class="btn" value="' + data + '" onclick="track(this)">Track</button>';
+                    { data: 'Region'}, 
+                    { data: 'EntryDatetime'}, 
+                    { data: 'ExitDatetime'}, 
+                    { data: 'vid',
+                    "render":function(data, type, row, meta){
+                    return   '<button class="btn" value="' + data + '" onclick="cases(this)">See Cases</button>';
 
-            //    }}, 
+                    }}, 
                     
                 ]
 
         });
+
+          var dataTable4 = $('#empTable4').DataTable({
+          'processing': true,
+          'serverSide': true,
+          'serverMethod': 'post',
+          //'searching': false, // Remove default Search Control
+          'ajax': {
+            'url':'../ajax/ajaxtrack_cases.php',
+            'data': function(data){
+
+              var group = $('#s4').val();
+              data.group = group;
+              data.vid = vid;
+
+            }
+            },
+            'columns': [
+              { data: 'LastName'}, 
+              { data: 'FirstName'}, 
+              { data: 'Age'}, 
+              { data: 'Gender'}, 
+              { data: 'BirthDate'}, 
+              { data: 'Number'}, 
+              { data: 'SINNumber'}, 
+              { data: 'Region'}, 
+              { data: 'EntryDatetime'},
+              { data: 'ExitDatetime'}, 
+            ]
+          });
 
         // $("#employee-grid_filter").css("display","none");  // hiding global search box
         
         $('.employee-search-input1').on( 'keyup click change', function () {   
             var i =$(this).attr('id');  // getting column index
             var v =$(this).val();  // getting search input value
+            console.log(v);
+            console.log(i);
             dataTable1.columns(i).search(v).draw();
         } );
 
-        $('#searchByGroup').on(' change ', function(){
+        $('#searchByGroup').on(' keyup click change ', function(){
             dataTable1.draw();
         });
-
-        $('.employee-search-input2').on( 'keyup click change', function () {   
-            var i =$(this).attr('id');  // getting column index
-            var v =$(this).val();  // getting search input value
-            console.log(v);
-            console.log(i);
-            dataTable2.columns(i-6).search(v).draw();
-        } );
 
         $('.employee-search-input3').on( 'keyup click change', function () {   
             var i =$(this).attr('id');  // getting column index
             var v =$(this).val();  // getting search input value
-            dataTable3.columns(i).search(v).draw();
+            console.log(v);
+            console.log(i);
+            dataTable3.columns(i-7).search(v).draw();
+        } );
+
+        $('.employee-search-input4').on( 'keyup click change', function () {   
+            var i =$(this).attr('id');  // getting column index
+            var v =$(this).val();  // getting search input value
+            console.log(v);
+            console.log(i);
+            dataTable4.columns(i-9).search(v).draw();
         } );
 
         $( ".datepicker" ).datepicker({
@@ -328,33 +428,35 @@
             buttonText: "Select date",
             closeText: "Clear"
         });
+
 				// $(document).on("click", ".ui-datepicker-close", function(){
 				// 	$('.datepicker').val("");
 				// 	dataTable.columns(5).search("").draw();
 				// });
-        $('#searchByStart').on( 'change', function(){
+
+        $('#searchByStart').on( 'keyup click change', function(){
           var start = $('#searchByStart').val();
         //   console.log(start);
           dataTable2.draw();
         });
 
-        $('#searchByEnd').on( 'change', function(){
+        $('#searchByEnd').on( 'keyup click change', function(){
           var end = $('#searchByEnd').val();
         //   console.log(end);
           dataTable2.draw();
         });
 
 
-        $('#start').on( 'change', function(){
+        $('#start').on( 'keyup click change', function(){
           var start = $('#start').val();
-        //   console.log(start);
-          dataTable2.draw();
+          console.log(start);
+          dataTable3.draw();
         });
 
-        $('#end').on( 'change', function(){
+        $('#end').on( 'keyup click change', function(){
           var end = $('#end').val();
-        //   console.log(end);
-          dataTable2.draw();
+          console.log(end);
+          dataTable3.draw();
         });
 });
 		</script>

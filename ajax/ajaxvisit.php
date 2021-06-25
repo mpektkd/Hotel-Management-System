@@ -66,14 +66,14 @@ if( !empty($_POST['columns'][10]['search']['value']) ){
    $searchQuery.=" AND  ( ExitDatetime = '".$_POST['columns'][10]['search']['value']."') ";
 }
 
-if($searchByStart != '' && ($searchByEnd != '')){
+if(($searchByStart != '') && ($searchByEnd != '')){
    $searchQuery .= " and ( EntryDatetime between '".$searchByStart .
                      "' and '".$searchByEnd."' ) ";
 }
-if($searchByStart != '' && ($searchByEnd = '')){
+if(($searchByStart != '') && ($searchByEnd == '')){
    $searchQuery .= " and ( EntryDatetime >= '".$searchByStart."' ) ";
 }
-if($searchByStart = '' && ($searchByEnd != '')){
+if(($searchByStart == '') && ($searchByEnd != '')){
    $searchQuery .= " and ( EntryDatetime <= '".$searchByEnd."' ) ";
 }
 // if($searchValue != ''){

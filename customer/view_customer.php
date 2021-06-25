@@ -10,7 +10,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <style>
         .wrapper{
-            width: 1400px;
+            width: 1500px;
             margin: 0 auto;
         }
         table tr td{
@@ -58,6 +58,7 @@
                                         echo "<th>LastName</th>";
                                         echo "<th>FirstName</th>";
                                         echo "<th>BirthDate</th>";
+                                        echo "<th>Age</th>";
                                         echo "<th>Gender</th>";
                                         echo "<th>Number</th>";
                                         echo "<th>Email</th>";
@@ -72,6 +73,7 @@
                                         echo "<td>" . $row['LastName'] . "</td>";
                                         echo "<td>" . $row['FirstName'] . "</td>";
                                         echo "<td>" . $row['BirthDate'] . "</td>";
+                                        echo "<td>" . $row['Age'] . "</td>";
                                         echo "<td>" . $row['Gender'] . "</td>";
                                         echo "<td>" . $row['Number'] . "</td>";
                                         echo "<td>" . $row['Email'] . "</td>";
