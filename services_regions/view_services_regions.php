@@ -233,7 +233,7 @@ $(document).ready(function(){
 });
 
 
-  $('#searchByService').keyup(function(){
+  $('#searchByService').on(' change', function(){
     dataTable.draw();
   });
 

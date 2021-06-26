@@ -196,7 +196,7 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
 				
 				$("#employee-grid_filter").css("display","none");  // hiding global search box
 				
-				$('.employee-search-input').on( 'keyup click change', function () {   
+				$('.employee-search-input').on( ' change', function () {   
 					var i =$(this).attr('id');  // getting column index
 					var v =$(this).val();  // getting search input value
 					dataTable.columns(i).search(v).draw();
@@ -217,13 +217,13 @@ if(isset($_POST["room"]) && !empty($_POST["room"])){
 				// 	$('.datepicker').val("");
 				// 	dataTable.columns(5).search("").draw();
 				// });
-        $('#searchByStart').on( 'keyup click change', function(){
+        $('#searchByStart').on( ' change', function(){
           var start = $('#searchByStart').val();
           console.log(start);
           dataTable.draw();
         });
 
-        $('#searchByEnd').on( 'keyup click change', function(){
+        $('#searchByEnd').on( ' change', function(){
           var end = $('#searchByEnd').val();
           console.log(end);
           dataTable.draw();

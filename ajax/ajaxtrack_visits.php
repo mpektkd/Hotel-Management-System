@@ -80,7 +80,7 @@ $totalRecordwithFilter = $records['allcount'];
 $qry3 = "SELECT * from (".$qry .")as r
         where 1 ";
 
-$empQuery = $qry3 . $searchQuery." order by " . $columnName . " " . $columnSortOrder ." limit ".$row.",".$rowperpage;
+$empQuery = $qry3 . $searchQuery." order by EntryDatetime " . $columnSortOrder ." limit ".$row.",".$rowperpage;
 $empRecords = mysqli_query($con, $empQuery);
 $data = array();
 

@@ -481,7 +481,7 @@ if ($flag1 || $flag2 || $flag3){
                                         echo '<td class="foo">';
                                             echo '<a href="update_charge.php?id='. $row['idServiceCharge'] .'" class="mr-3" title="Update Record" data-toggle="tooltip"><span class="fa fa-pencil"></span></a>';
                                             echo '<a href="delete_charge.php?id='. $row['idServiceCharge'] .'" title="Delete Record" data-toggle="tooltip"><span class="fa fa-trash"></span></a>';
-                                            if ($row['isPaid'] == 0){
+                                            if ($row['isPaid'] == 0 && $row['CostAmount'] != 0){
                                                 echo '<form action="'. htmlspecialchars(basename($_SERVER['REQUEST_URI'])) . '" method="post">
                                                     <input type="hidden" name="ssn" value="' . $ssn . '"/>    
                                                     <input type="hidden" name="bid" value="' . $bid . '"/>    
