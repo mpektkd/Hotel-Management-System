@@ -42,6 +42,21 @@ if(isset($_POST["id"]) && !empty($_POST["id"])){
     // Check input errors before inserting in database
     if(empty($name_err) && empty($address_err) && empty($salary_err)){
         // Prepare an update statement
+
+        // CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateCustomer`(
+        //     IN ID INT,
+        //     IN FirstName varchar(45), IN LastName varchar(45),  
+        //     IN PhoneNumber varchar(255))
+        // BEGIN
+        
+        //     UPDATE mydb.Customer 
+        //     SET LastName=LastName, FirstName=FirstName WHERE idCustomer=ID;
+            
+        //     UPDATE Phone
+        //     SET Number = PhoneNumber where idCustomer=ID;
+        
+            
+        // END
         $sql = "CALL mydb.UpdateCustomer (?, ?, ?, ?);";
          
         if($stmt = mysqli_prepare($con, $sql)){

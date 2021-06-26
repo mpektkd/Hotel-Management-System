@@ -43,7 +43,7 @@
         white-space:nowrap;
       }
       .date{
-        width: 30%
+        width: 10%
         margin: 0 auto;
       }
         form {
@@ -62,18 +62,15 @@
     <?php echo '<a href="../index.html" class="btn btn-secondary ml-2">Back</a>'?>
     </div>
 
-<div class="header"><h1>Visits for <?php echo $descr . " " .$regname ?></h1></div>
+<div class="header"><h2>Choose Customer</h2></div>
 <div class="container">
-               <!-- Custom Filter -->
+  <!-- Custom Filter -->
    <table>
      <tr>
        <td>
-         <input type='number' id='searchByPrice' placeholder='Enter Price'>
-       </td>
-       <td>
          <select class="form-data" id='searchByGroup'>
          <div class="dropdown-content">
-           <option value=''>-- Select View --</option>
+           <option value=''>-- Select Group --</option>
            <option value='20-40'>20-40</option>
            <option value='40-60'>40-60</option>
            <option value='60'>60+</option>
@@ -106,23 +103,20 @@
           <td><input type="text" id="5" placeholder="Search by Number" class="employee-search-input1 dropdown-content" ></td>
           <td><input type="text" id="6" placeholder="Search by Email" class="employee-search-input1 dropdown-content" ></td>
           <td><input type="text" id="7" placeholder="Search by SSN" class="employee-search-input1 dropdown-content" ></td>
-          <td><button class="btn" value="" onclick="filter_nfc(this)">Clear</button></td>
+          <td><button class="btn" value="" onclick="choose(this)">Clear</button></td>
 					</tr>
 				</thead>
 			</table>
 		</div>
-
-
+    <div class="header"><h2 id="cname">Choose Reservation for None</script></h2></div>
     <p class ="date">
-  <h4>Choose Start Datetime</h4>
-    <input type="text" id="searchByStart" class="datepicker" >
+  <h6 class = "pull-left" >Choose Start Datetime:</h6>
+    <input type="text" id="searchByStart" class = "datepicker" >
   </p>
   <p class ="date">
-   <h4>Choose End Datetime</h4>
+   <h6 class = "pull-left" >Choose End Datetime:</h6>
     <input type="text" id="searchByEnd" class="datepicker" >
   </p>
-      
-		<div class="header"><h1>Visits for <?php echo $descr . " " .$regname ?></h1></div>
 		<div class="container">
 			<table id="empTable2"  class="displaydataTable table-bordered table-striped " cellspacing="0" width="30%">
 				<thead>
@@ -136,33 +130,14 @@
 				</thead>
 			</table>
 		</div>
-
-        <div class="header"><h1>Visits for <?php echo $descr . " " .$regname ?></h1></div>
 <div class="container">
-               <!-- Custom Filter -->
-   <table>
-     <tr>
-       <td>
-         <input type='number' id='s1' placeholder='Enter Price'>
-       </td>
-       <td>
-         <select class="form-data" id='s2'>
-         <div class="dropdown-content">
-           <option value=''>-- Select View --</option>
-           <option value='20-40'>20-40</option>
-           <option value='40-60'>40-60</option>
-           <option value='60'>60+</option>
-        </div>
-         </select>
-       </td>
-     </tr>
-   </table>
-   <p class ="date">
-  <h4>Choose Start Datetime</h4>
-    <input type="text" id="start" class="datepicker" >
+<div class="header"><h3>Track Region</h3></div>
+    <p class ="date">
+  <h6 class = "pull-left" >Choose Start Datetime:</h6>
+    <input type="text" id="start" class = "datepicker" >
   </p>
   <p class ="date">
-   <h4>Choose End Datetime</h4>
+   <h6 class = "pull-left" >Choose End Datetime:</h6>
     <input type="text" id="end" class="datepicker" >
   </p>
    <!-- Table -->
@@ -175,7 +150,6 @@
           <th></th>
 					</tr>
 				</thead>
-                </thead>
 				<thead>
                 <tr>
                 <td></td>
@@ -186,27 +160,19 @@
 			</table>
 		</div>
 
-    <div class="header"><h1>Visits for <?php echo $descr . " " .$regname ?></h1></div>
-<div class="container">
-               <!-- Custom Filter -->
-   <table>
-     <tr>
-       <td>
-         <input type='number' id='s3' placeholder='Enter Price'>
-       </td>
-       <td>
-         <select class="form-data" id='s4'>
-         <div class="dropdown-content">
-           <option value=''>-- Select View --</option>
-           <option value='20-40'>20-40</option>
-           <option value='40-60'>40-60</option>
-           <option value='60'>60+</option>
+    <div class="header"><h3>Possible Cases</h3></div>
+    <div class="wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="mt-5 mb-3 clearfix">
+            <button class="btn btn-success pull-center" value="1" onclick="find_all(this)">Find All</button>
+          </div>
         </div>
-         </select>
-       </td>
-     </tr>
-   </table>
-
+      </div>
+    </div>
+  </div>
+<div class="container">
    <!-- Table -->
 			<table id="empTable4"  class="display dataTable table-bordered table-striped " cellspacing="0" width="30%">
 				<thead>
@@ -221,20 +187,21 @@
           <th>Region</th>
           <th>Entry Datetime</th>
           <th>Exit Datetime</th>
+          <th>Times</th>
 					</tr>
 				</thead>           
 				<thead>
 					<tr>
-          <td><input type="text" id="10" placeholder="Search by Last Name" class="employee-search-input4 dropdown-content" ></td>
-          <td><input type="text" id="11" placeholder="Search by First Name" class="employee-search-input4 dropdown-content" ></td>
-          <td><input type="text" id="12" placeholder="Search by >= Age" class="employee-search-input4 dropdown-content" ></td>
-          <td><input type="text" id="13" placeholder="Search by Gender" class="employee-search-input4 dropdown-content" ></td>
-          <td><input type="text" id="14" placeholder="Search by Number" class="employee-search-input4 dropdown-content" ></td>
-          <td><input type="text" id="15" placeholder="Search by Email" class="employee-search-input4 dropdown-content" ></td>
-          <td><input type="text" id="16" placeholder="Search by SSN" class="employee-search-input4 dropdown-content" ></td>
-          <td><input type="text" id="17" placeholder="Search by SSN" class="employee-search-input4 dropdown-content" ></td>
-          <td><input type="text" id="18" placeholder="Search by SSN" class="employee-search-input4 dropdown-content" ></td>
-          <td><input type="text" id="19" placeholder="Search by SSN" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="10" placeholder="Last Name" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="11" placeholder="First Name" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="12" placeholder="Age" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="13" placeholder="Gender" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="14" placeholder="BirthDate" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="15" placeholder="Number" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="16" placeholder="SSN" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="17" placeholder="Region" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="18" placeholder="Entry" class="employee-search-input4 dropdown-content" ></td>
+          <td><input type="text" id="19" placeholder="Exit" class="employee-search-input4 dropdown-content" ></td>
 					</tr>
 				</thead>
 			</table>
@@ -244,15 +211,27 @@
     var cid;
     var bid;
     var vid;
-    var filter_nfc ;
+    var choose ;
     var track;
     var cases;
-    
+    var find_all;
+    var all = 0;
+    var name = '';
+
     $(document).ready(function() {
-        
-        filter_nfc = function(button) {   
-          cid = $(button).val();
-          dataTable2.draw();
+
+      choose = function(button) { 
+
+        var str = $(button).val();
+        var res = str.split(",");
+        cid = res[0];
+        name = res[2] + " " + res[1];
+        document.getElementById('cname').innerHTML = 'Choose Reservation for ' + name;
+        dataTable2.draw();
+        bid = '';
+        dataTable3.draw();
+        vid = '';
+        dataTable4.draw();
         };
 
         track = function(button) {   
@@ -262,7 +241,13 @@
 
         cases = function(button){
           vid = $(button).val();
+          all = 0;
           console.log(vid);
+          dataTable4.draw();
+        };
+
+        find_all = function(button) {   
+          all = $(button).val();
           dataTable4.draw();
         };
 
@@ -290,7 +275,9 @@
             { data: 'SINNumber'}, 
             { data: 'cid',
             "render":function(data, type, row, meta){
-            return   '<button class="btn" value="' + data + '" onclick="filter_nfc(this)">Choose</button>';
+              var first = row['FirstName'];
+              var last = row['LastName'];
+            return   '<button class="btn" value="' + [data, first, last] + '" onclick="choose(this)">Choose</button>';
 
             }}
           ]
@@ -370,6 +357,8 @@
               var group = $('#s4').val();
               data.group = group;
               data.vid = vid;
+              data.all = all;
+              data.bid = bid;
 
             }
             },
@@ -384,6 +373,7 @@
               { data: 'Region'}, 
               { data: 'EntryDatetime'},
               { data: 'ExitDatetime'}, 
+              { data: 'Times'},
             ]
           });
 

@@ -31,8 +31,11 @@ $columns = array(
 
 ## Search 
 $searchQuery = " ";
-if( !empty($group) ){
+if( !empty($group) && $group != '60'){
    $searchQuery.=" AND ( Age >= " . $start . " and Age <= " . $end . " ) ";
+}
+if( $group == '60' ){
+   $searchQuery.=" AND ( Age >= 60 )";
 }
 if( !empty($_POST['columns'][1]['search']['value']) ){
    $searchQuery.=" AND ( LastName like '%".$_POST['columns'][1]['search']['value']."%') ";    
@@ -65,6 +68,7 @@ $qry = 'SELECT
             id,
             LastName,
             FirstName,
+            concat(LastName," ", FirstName) as Name,
             Gender,
             TRIM(LEADING "0" FROM DATE_FORMAT(FROM_DAYS(DATEDIFF(date(NOW()), BirthDate)), "%Y")) AS Age,
             Number,

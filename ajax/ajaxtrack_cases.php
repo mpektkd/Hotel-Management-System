@@ -13,9 +13,8 @@ $columnSortOrder = $_POST['order'][0]['dir']; // asc or desc
 ## Custom Field value
 $group = $_POST['group'];
 $vid = $_POST['vid'];
-// $vid = 1628;
-$start = substr($group,0,2);
-$end = substr($group,-2,2);
+$all = $_POST['all'];
+$bid = $_POST['bid'];
 
 ## Custom Field value
 $searchByStart = $_POST['searchByStart'];
@@ -48,9 +47,6 @@ if(($searchByStart != '') && ($searchByEnd == '')){
 if(($searchByStart == '') && ($searchByEnd != '')){
    $searchQuery .= " and ( EntryDatetime <= '".$searchByEnd."' ) ";
 }
-if( !empty($group) ){
-   $searchQuery.=" AND ( Age >= " . $start . " and Age <= " . $end . " ) ";
-}
 if( !empty($_POST['columns'][1]['search']['value']) ){
    $searchQuery.=" AND ( LastName like '%".$_POST['columns'][1]['search']['value']."%') ";    
 }
@@ -82,6 +78,7 @@ if( !empty($_POST['columns'][10]['search']['value']) ){
    $searchQuery.=" AND ( ExitDatetime = '%".$_POST['columns'][10]['search']['value']."%') ";    
 }
 
+if ($all == 0){
 ## Fetch records
 $qry = 'SELECT 
             BraceletId,
@@ -116,9 +113,8 @@ $qry = 'SELECT
          join Regions as b on b.idRegions=a.idRegions
          join ActiveCustomerLiveToRooms as c on c.BraceletId=a.BraceletId
          join CustomerInfo as d on d.id=c.idCustomer
-         where a.BraceletId!=' . $bid . '
-            and a.idRegions=' . $rid . '
-            and 
+         where a.BraceletId!=' . $bid . ' and a.idRegions=' . $rid . 
+            ' and 
                (
                   (a.EntryDatetime between "' . $entry . '" and date_add("' . $exit . '", interval 1 hour))
                   or
@@ -126,6 +122,48 @@ $qry = 'SELECT
                   or
                   ("' . $entry . '" between a.EntryDatetime and a.ExitDatetime)
                )';
+}
+else{
+   $qry = 'SELECT 
+
+            LastName, 
+            FirstName,
+            Gender,
+            Age,
+            BirthDate,
+            Number,
+            SINNumber,
+            count(*) as Times
+
+         from(
+         select 
+               idRegions, 
+               EntryDatetime, 
+               ExitDatetime 
+               
+         from CustomerVisitRegions
+         where BraceletId=' . $bid . ' 
+         ) as w
+         join CustomerVisitRegions as q on q.idRegions=w.idRegions
+         join Regions as we on we.idRegions=q.idRegions
+         join ActiveCustomerLiveToRooms as t on t.BraceletId=q.BraceletId
+         join CustomerInfo as r on r.id=t.idCustomer
+         where q.BraceletId!=' . $bid . ' and 
+                        (
+                           (q.EntryDatetime between w.EntryDatetime and date_add(w.ExitDatetime, interval 1 hour))
+                           or
+                           (q.ExitDatetime between w.EntryDatetime and w.ExitDatetime)
+                           or
+                           (w.EntryDatetime between q.EntryDatetime and q.ExitDatetime)
+                     ) group by 
+                                 LastName, 
+                                 FirstName,
+                                 Gender,
+                                 Age,
+                                 BirthDate,
+                                 Number,
+                                 SINNumber';
+}
                // echo $qry;
 ## Total number of records without filtering
 $qry1 = "SELECT count(*) as allcount from (".$qry.")as r";
@@ -146,25 +184,51 @@ $totalRecordwithFilter = $records['allcount'];
 $qry3 = "SELECT * from (".$qry .")as r
         where 1 ";
 
-$empQuery = $qry3 . $searchQuery." order by EntryDatetime, ExitDatetime " . $columnSortOrder ." limit ".$row.",".$rowperpage;
-$empRecords = mysqli_query($con, $empQuery);
+
 $data = array();
 
-while ($row = mysqli_fetch_assoc($empRecords)) {
-   $data[] = array(
-     "LastName"=> $row['LastName'],
-     "FirstName"=>$row['FirstName'],
-     "Age"=>$row['Age'],
-     "Gender"=>$row['Gender'],
-     "BirthDate"=>$row['BirthDate'],
-     "Number"=>$row['Number'],
-     "SINNumber"=>$row['SINNumber'],
-     "Region"=>$row['Region'],
-     "EntryDatetime"=>$row['EntryDatetime'],
-     "ExitDatetime"=>$row['ExitDatetime'],
-   );
-}
+if($all==0){
+   
+   $empQuery = $qry3 . $searchQuery." order by LastName, EntryDatetime, ExitDatetime " . $columnSortOrder ." limit ".$row.",".$rowperpage;
+   $empRecords = mysqli_query($con, $empQuery);   
 
+   while ($row = mysqli_fetch_assoc($empRecords)) {
+      $data[] = array(
+      "LastName"=> $row['LastName'],
+      "FirstName"=>$row['FirstName'],
+      "Age"=>$row['Age'],
+      "Gender"=>$row['Gender'],
+      "BirthDate"=>$row['BirthDate'],
+      "Number"=>$row['Number'],
+      "SINNumber"=>$row['SINNumber'],
+      "Region"=>$row['Region'],
+      "EntryDatetime"=>$row['EntryDatetime'],
+      "ExitDatetime"=>$row['ExitDatetime'],
+      "Times"=>1,
+      );
+   }
+}
+else{
+
+   $empQuery = $qry3 . $searchQuery." order by Times DESC limit ".$row.",".$rowperpage;
+   $empRecords = mysqli_query($con, $empQuery);   
+
+   while ($row = mysqli_fetch_assoc($empRecords)) {
+      $data[] = array(
+      "LastName"=> $row['LastName'],
+      "FirstName"=>$row['FirstName'],
+      "Age"=>$row['Age'],
+      "Gender"=>$row['Gender'],
+      "BirthDate"=>$row['BirthDate'],
+      "Number"=>$row['Number'],
+      "SINNumber"=>$row['SINNumber'],
+      "Region"=>'',
+      "EntryDatetime"=>'',
+      "ExitDatetime"=>'',
+      "Times"=>$row['Times'],
+      );
+   }
+}
 ## Response
 $response = array(
   "draw" => intval($draw),

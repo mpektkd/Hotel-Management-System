@@ -190,6 +190,23 @@ if ($flag1 || $flag2 || $flag3){
         $ssn = trim($_GET['ssn']);
         // Prepare a select statement
 
+        $QRY = "SELECT 
+
+                    BraceletId as NFCID,
+                    LastName,
+                    FirstName
+
+            from ActiveCustomerLiveToRooms	 as a 
+            join Customer as b on b.idCustomer=a.idCustomer
+            where a.BraceletId=" . $bid;
+
+        $RES = mysqli_query($con, $QRY);
+        $row = mysqli_fetch_array($RES);
+
+        $nfc = $row['NFCID'];
+        $lastname = $row['LastName'];
+        $firstname = $row['FirstName'];
+
         $qry1 = "SELECT * from SubscribedServices as q 
                 join Services as w on w.idServices=q.idSubscribed
                 where idSubscribed not in (
@@ -351,7 +368,8 @@ if ($flag1 || $flag2 || $flag3){
             <div class="row">
                 <div class="col-md-12">
                     <div class="mt-5 mb-3 clearfix">
-                        <h2 class="pull-left">Subscription Details</h2>
+                    <h2 class="pull-center"><?php echo $lastname . " " . $firstname . "<br> NFCID: " .$nfc ?></h2>
+                        <h3 class="pull-left">Subscription Details</h3>
                         <?php echo '<a href="../customer/bracelet_action.php?bid=' . $bid . '&ssn=' .$ssn . '" class="btn btn-success pull-right"><i class="fa "></i>See Action</a>'?>
                     </div>
                     <?php
@@ -574,9 +592,13 @@ if ($flag1 || $flag2 || $flag3){
     </div>
 
 </div>
-
-<div class="header"><h1>Visits for <?php echo $descr . " " .$regname ?></h1></div>
-		<div class="container">
+<div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mt-5 mb-3 clearfix">
+                        <h2 class="pull-left"> Approved Details</h2>
+		<!-- <div class="container"> -->
 			<table id="empTable"  class="display dataTable table-bordered table-striped" cellspacing="0" width="100%">
 				<thead>
 					<tr>
@@ -598,7 +620,12 @@ if ($flag1 || $flag2 || $flag3){
 					</tr>
 				<!-- </thead> -->
 			</table>
-		</div>
+		<!-- </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <script>
 			$(document).ready(function() {
