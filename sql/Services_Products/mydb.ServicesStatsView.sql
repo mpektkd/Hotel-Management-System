@@ -1,4 +1,4 @@
--- create view ServicesStatsLastSixMonths as
+create view ServicesStatsLastSixMonths as
 select 
 	w.Description,
 	w.RegionName,
@@ -40,30 +40,3 @@ join ServiceMenu as b on b.idServiceMenu=a.idServiceMenu
 join Services as c on c.idServices=b.idServices
 group by c.Description)as r on r.Description=w.Description
 
--- 
--- 
--- 
--- 
--- (
--- select 
--- 	c.Description,
--- 	count(*)/(
---     select 
--- 	count(*) as Visitors
--- 	
--- 	from ActiveCustomerLiveToRooms as a
---    	where a.ArrivalDatetime between "2021-01-01 00:00:00" and CONCAT(CURRENT_DATE, " ", CURRENT_TIME()) 
--- ) as VisitsPerPerson
--- 	
---  from CustomerVisitRegions as a
--- join ServicesAtSpecifiedRegions as b on b.idOtherRegions=a.idRegions
--- join Services as c on c.idServices=b.idServices
--- where a.EntryDatetime between "2021-01-01 00:00:00" and CONCAT(CURRENT_DATE, " ", CURRENT_TIME()) 
--- group by c.Description
--- )
--- as h on h.Description=g.Description
--- ;
--- 
--- 
--- 
--- 

@@ -1,4 +1,4 @@
-	DELIMITER $$
+DELIMITER $$
 
 CREATE TRIGGER after_insert_passing
 AFTER INSERT

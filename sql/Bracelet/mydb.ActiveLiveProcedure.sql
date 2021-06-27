@@ -15,11 +15,10 @@ BEGIN
     
     set rid = r;
 	
--- 	select count(*) 
---     from ActiveCustomerLiveToRooms
--- 		into m;
+	select count(*) 
+    from ActiveCustomerLiveToRooms
+		into m;
         
-	select 41 into m;
 	set prev_m = m;
     
 	SELECT COUNT(*) 
@@ -77,6 +76,6 @@ BEGIN
 END$$
 DELIMITER ;
 
-call ActiveLive (1, 30, '2021-03-15 12:35:04', 0, 1, 1, 40);
+
 
 

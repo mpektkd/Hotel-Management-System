@@ -1,29 +1,29 @@
--- DELIMITER $$
--- CREATE FUNCTION RandomDateBetween (date_from DATETIME, date_to DATETIME) 
--- RETURNS DATETIME
--- BEGIN 
---   DECLARE result DATETIME;
---   SET result = (SELECT FROM_UNIXTIME(
---                       UNIX_TIMESTAMP(date_from) + FLOOR(
---                           RAND() * (
---                               UNIX_TIMESTAMP(date_to) - UNIX_TIMESTAMP(date_from) + 1
---                           )
---                       )
---                ));
---   RETURN (result);
--- END$$
--- DELIMITER ;
--- 
--- DELIMITER $$
--- CREATE FUNCTION RandomHours (start int, end int) 
--- RETURNS int
--- BEGIN 
---   DECLARE result int;
---   SET result = (SELECT (FLOOR( start + RAND( ) *(end-start+1) )));
---   RETURN (result);
--- END$$
--- DELIMITER ;
---  
+DELIMITER $$
+CREATE FUNCTION RandomDateBetween (date_from DATETIME, date_to DATETIME) 
+RETURNS DATETIME
+BEGIN 
+  DECLARE result DATETIME;
+  SET result = (SELECT FROM_UNIXTIME(
+                      UNIX_TIMESTAMP(date_from) + FLOOR(
+                          RAND() * (
+                              UNIX_TIMESTAMP(date_to) - UNIX_TIMESTAMP(date_from) + 1
+                          )
+                      )
+               ));
+  RETURN (result);
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION RandomHours (start int, end int) 
+RETURNS int
+BEGIN 
+  DECLARE result int;
+  SET result = (SELECT (FLOOR( start + RAND( ) *(end-start+1) )));
+  RETURN (result);
+END$$
+DELIMITER ;
+ 
 
 DELIMITER $$
 
@@ -93,8 +93,6 @@ BEGIN
 					into smid;
 				insert into ServiceCharge (BraceletId, idServiceMenu, Quantity, idRegions, CostAmount, Datetime, isPaid) 
                 values (bid, smid, RandomHours(1,4), rid, 0, RandomDateBetween (arrival, leaving), 0);
-
-			-- select bid, smid, RandomHours(1,4), rid, 0, RandomDateBetween (arrival, leaving), 0 ;
 			
 				set i = i+1;
 			end while;
@@ -104,5 +102,3 @@ BEGIN
 END$$
 DELIMITER ;
 
-
-call AddCharge();

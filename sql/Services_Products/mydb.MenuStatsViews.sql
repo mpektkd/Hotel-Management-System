@@ -1,4 +1,4 @@
--- create view MenuStatsLastSixMonths as 
+create view MenuStatsLastSixMonths as 
 
 select 
 		a.idServiceMenu as idServiceMenu,

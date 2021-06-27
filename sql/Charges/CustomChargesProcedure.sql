@@ -56,8 +56,6 @@ BEGIN
 					into smid;
 				insert into ServiceCharge (BraceletId, idServiceMenu, Quantity, idRegions, CostAmount, Datetime, isPaid) 
                 values (bid, smid, RandomHours(1,4), rid, 0, RandomDateBetween (arrival, leaving), ROUND(RAND()));
-
-			-- select bid, smid, RandomHours(1,4), rid, 0, RandomDateBetween (arrival, leaving), ROUND(RAND()) ;
 			
 				set i = i+1;
 			end while;
@@ -66,6 +64,3 @@ BEGIN
 
 END$$
 DELIMITER ;
-
--- 
--- call AddChargeCustom();
