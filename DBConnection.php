@@ -1,7 +1,7 @@
 <?php
 $cleardb_server = "localhost";
 $cleardb_username = "root";
-$cleardb_password = "";
+$cleardb_password = "mpekristkd68";
 $cleardb_db = "mydb";
 
 // Connect to DB
