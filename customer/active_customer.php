@@ -93,7 +93,7 @@
                                         echo "<td>" . $row['TotalBill'] . "</td>";
                                         echo "<td>" . $row['Description_Place'] . "</td>";
                                         echo "<td>";
-                                            echo '<a href="../subscriptions/subscription_info2.php?bid='. $row['BraceletId'] . '&ssn=' .$ssn . '" class="btn btn-secondary">See info</a>';
+                                            echo '<a href="../nfc/nfc_info.php?bid='. $row['BraceletId'] . '&ssn=' .$ssn . '" class="btn btn-secondary">See info</a>';
                                         echo "</td>";
                                     echo "</tr>";
                                 }

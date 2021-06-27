@@ -53,7 +53,7 @@ if ($flag1 || $flag2 || $flag3){
                 if(mysqli_stmt_execute($stmt)){
                     // Records updated successfully. Redirect to landing page
                     if ($flag2 = 0 && $flag3 = 0){
-                        header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );  # -> subscritpion_info 
+                        header("location: nfc_info.php?bid=" . $bid . "&ssn=" .$ssn );  # -> subscritpion_info 
                     }
                     // exit();
                 } else{
@@ -87,7 +87,7 @@ if ($flag1 || $flag2 || $flag3){
         //Validate quantity
         if($quantity <= 0){
 
-            header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );     # -> subscritpion_info  
+            header("location: nfc_info.php?bid=" . $bid . "&ssn=" .$ssn );     # -> subscritpion_info  
             // echo '<script>alert("quant")</script>';              
             echo $quantity;
         }
@@ -106,7 +106,7 @@ if ($flag1 || $flag2 || $flag3){
         //Validate Date
         if(!($date >= $arrival && $date <= $leaving)){
 
-            header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );     # -> subscritpion_info                
+            header("location: nfc_info.php?bid=" . $bid . "&ssn=" .$ssn );     # -> subscritpion_info                
             // echo '<script>alert("Date")</script>';
             echo $date;
         }
@@ -141,7 +141,7 @@ if ($flag1 || $flag2 || $flag3){
                 
                 if($flag3 = 0){
                 // Records updated successfully. Redirect to landing page
-                    header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );# -> subscritpion_info 
+                    header("location: nfc_info.php?bid=" . $bid . "&ssn=" .$ssn );# -> subscritpion_info 
                 }
                 // exit();
             } else{
@@ -171,7 +171,7 @@ if ($flag1 || $flag2 || $flag3){
             if(mysqli_stmt_execute($stmt)){
                 
                 // Records updated successfully. Redirect to landing page
-                    header("location: subscription_info2.php?bid=" . $bid . "&ssn=" .$ssn );# -> subscritpion_info 
+                    header("location: nfc_info.php?bid=" . $bid . "&ssn=" .$ssn );# -> subscritpion_info 
                 // exit();
             } else{
                 echo "Oops! Something went wrong. Please try again later.";
