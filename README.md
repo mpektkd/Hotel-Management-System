@@ -1,4 +1,5 @@
-# ASDF Palace (Hotel)
+# HotelManagementSystem-MySQL-PHP 
+## ASDF Palace (Hotel)
 I designed a DB for a hotel and a control-UI for the staff. 
 
 Further down, the notation "(some text)" refers to the correspondnig table-entity in the database.
